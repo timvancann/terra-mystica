@@ -6,6 +6,8 @@ trait Faction {
 
   val supply: FactionSupply
 
-  def removePriest(n: Int = 1) = ???
+  def removePriest(n: Int = 1) = {
+
+  }
 
 }
