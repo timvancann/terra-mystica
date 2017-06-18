@@ -1,12 +1,14 @@
 trait FactionSupply {
-  def addPriest(n: Int = 1) = ???
+  def addPriest(n: Int = 1): Unit = {
+
+  }
 }
 
 trait Faction {
 
-  val supply: FactionSupply
+  def supply: FactionSupply
 
-  def removePriest(n: Int = 1) = {
+  def removePriest(n: Int = 1): Unit = {
 
   }
 
