@@ -7,9 +7,11 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
   var cult: Cult = _
   var faction: Faction = _
 
+  case class GenericFaction() extends Faction
+
   before {
     cult = new Cult
-    faction = mock[Faction]
+    faction = GenericFaction()
 
     cult.addFaction(faction)
   }
@@ -42,8 +44,6 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
   test("Test adding priest on non-1 bonus space") {
     var spaces = cult.availableOrderSpaces
 
-    faction.removePriest _ expects 1
-    faction.gainPower _ expects 1
     cult.placePriest(faction, spaces.head)
 
     spaces = cult.availableOrderSpaces
@@ -54,12 +54,7 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
 
   test("Test adding priest on 1-bonus space") {
     val space = cult.availableOrderSpaces.find(_.bonus == 1).get
-    val supply = mock[FactionSupply]
-    supply.addPriest _ expects 1
-    faction.supply _ expects() returns supply
 
-    faction.removePriest _ expects 1
-    faction.gainPower _ expects 0
     cult.placePriest(faction, space)
 
     val spaces = cult.availableOrderSpaces

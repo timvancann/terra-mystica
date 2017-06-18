@@ -24,8 +24,12 @@ class Cult {
   }
 
   def placePriest(faction: Faction, space: OrderSpace): Unit = {
-    if (space.bonus == 1) faction.supply.addPriest() else space.faction = faction
-    faction.removePriest()
+    if (space.bonus == 1) {
+      faction.spend(ResourceType.Priest)
+    } else {
+      space.faction = faction
+      faction.sacrifice(ResourceType.Priest)
+    }
     advance(faction, space.bonus)
   }
 
@@ -36,7 +40,7 @@ class Cult {
     val next = Math.min(10, current + n)
     progress(next).factions += faction
 
-    faction.gainPower(calculatPowerGain(current, next))
+    faction.gain(ResourceType.Power, calculatPowerGain(current, next))
   }
 
   def calculatPowerGain(start: Int, end: Int): Int = {
