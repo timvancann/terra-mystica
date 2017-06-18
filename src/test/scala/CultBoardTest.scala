@@ -2,12 +2,16 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
 
 
-class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeAndAfter{
+class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeAndAfter {
 
   var cult: Cult = _
+  var faction: Faction = _
 
   before {
     cult = new Cult
+    faction = mock[Faction]
+
+    cult.addFaction(faction)
   }
 
   test("Test default available order spaces") {
@@ -16,18 +20,30 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
   }
 
   test("Test adding faction") {
-    val faction = mock[Faction]
-    cult.addFaction(faction)
-
     cult.currentProgress(faction) shouldBe 0
+  }
+
+  test("Test powergain no power") {
+    cult.calculatPowerGain(0, 2) shouldBe 0
+  }
+
+  test("Test powergain single power transition") {
+    cult.calculatPowerGain(0, 3) shouldBe 1
+  }
+
+  test("Test powergain multiple power transitions") {
+    cult.calculatPowerGain(3, 9) shouldBe 4
+  }
+
+  test("Test powergain all power transitions") {
+    cult.calculatPowerGain(0, 10) shouldBe 8
   }
 
   test("Test adding priest on non-1 bonus space") {
     var spaces = cult.availableOrderSpaces
-    val faction = mock[Faction]
-    faction.removePriest _ expects 1
 
-    cult.addFaction(faction)
+    faction.removePriest _ expects 1
+    faction.gainPower _ expects 1
     cult.placePriest(faction, spaces.head)
 
     spaces = cult.availableOrderSpaces
@@ -38,13 +54,12 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
 
   test("Test adding priest on 1-bonus space") {
     val space = cult.availableOrderSpaces.find(_.bonus == 1).get
-    val faction = mock[Faction]
     val supply = mock[FactionSupply]
     supply.addPriest _ expects 1
-    faction.removePriest _ expects 1
-    faction.supply _ expects () returns supply
+    faction.supply _ expects() returns supply
 
-    cult.addFaction(faction)
+    faction.removePriest _ expects 1
+    faction.gainPower _ expects 0
     cult.placePriest(faction, space)
 
     val spaces = cult.availableOrderSpaces
