@@ -1,4 +1,5 @@
 import ResourceType.ResourceType
+import TerrainType.TerrainType
 
 class FactionSupply(priests: Int = 5, bridge: Int = 3) {
   val supply = Map(
@@ -17,7 +18,10 @@ class FactionSupply(priests: Int = 5, bridge: Int = 3) {
 
 case class Cost(resource: ResourceType, n: Int)
 
-trait Faction {
+case class Faction(terrain: TerrainType,
+                   cultCost: Cost = Cost(ResourceType.Priest, 1),
+                   terraformCost: Cost = Cost(ResourceType.Worker, 3),
+                   dwellingCost: List[Cost]) {
   private val factionSupply = new FactionSupply
 
   private val supply = Map(
@@ -52,13 +56,6 @@ trait Faction {
   def numberOfTimesResourcesToSpendFor(cost: List[Cost]): Int = {
     cost.map(c => supply(c.resource).amountToSpend / c.n).min
   }
-
-  def costForCult: Cost = Cost(ResourceType.Priest, 1)
-  def costForTerraform: Cost
-  def costForDwelling: List[Cost]
-  def costForTradingHouse: List[Cost]
-
-
 
   override def clone: Faction = ???
 

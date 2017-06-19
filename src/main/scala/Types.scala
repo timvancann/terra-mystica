@@ -12,3 +12,9 @@ object CultType extends Enumeration {
   type CultType = Value
   val Fire, Water, Air, Earth = Value
 }
+
+object TerrainType extends Enumeration {
+  type TerrainType = Value
+  val Plains, Swamp, Lakes, Forest, Mountains, Wasteland, Desert, Sea = Value
+}
+
