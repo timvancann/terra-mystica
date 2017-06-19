@@ -20,10 +20,11 @@ trait Faction {
   private val factionSupply = new FactionSupply
 
   private val supply = Map(
-    ResourceType.Coin -> new GenericResource,
+    ResourceType.Coin   -> new GenericResource,
     ResourceType.Priest -> new PriestResource(factionSupply),
     ResourceType.Worker -> new GenericResource,
-    ResourceType.Power -> constructPowerResource
+    ResourceType.Bridge -> new BridgeResource(factionSupply),
+    ResourceType.Power  -> constructPowerResource
   )
 
   def constructPowerResource: PowerResource = {

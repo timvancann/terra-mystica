@@ -19,7 +19,7 @@ class GenericResource(var amount: Int = 0) extends Resource {
   override def sacrifice(n: Int): Unit = amount -= n
 }
 
-class PriestResource(factionSupply: FactionSupply, amount: Int = 0) extends GenericResource(amount) {
+class PriestResource(factionSupply: FactionSupply, amount: Int = 5) extends GenericResource(amount) {
   override def gain(n: Int): Unit = {
     super.gain(n)
     factionSupply.buy(ResourceType.Priest)
@@ -29,6 +29,10 @@ class PriestResource(factionSupply: FactionSupply, amount: Int = 0) extends Gene
     super.spend(n)
     factionSupply.restock(ResourceType.Priest)
   }
+}
+
+class BridgeResource(factionSupply: FactionSupply, amount: Int = 0) extends GenericResource(amount) {
+  override def sacrifice(n: Int): Unit = factionSupply.buy(ResourceType.Bridge)
 }
 
 class PowerResource(var stage1: Int = 5, var stage2: Int = 7: Int, var stage3: Int = 0) extends Resource {
