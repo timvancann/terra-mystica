@@ -3,7 +3,7 @@ import CultType.CultType
 object Actions {
 
   def generatePlacePriestOnCult(gameState: GameState, faction: Faction): Seq[(GameState) => GameState] = {
-    val cost = faction.costForCult
+    val cost = faction.cultCost
     val n = faction.numberOfTimesResourcesToSpendFor(List(cost))
     if (n > 0) {
       val spaces: Seq[(CultType, OrderSpace)] = (for {
@@ -28,12 +28,4 @@ object Actions {
 
   def upgradeBuilding(gameState: GameState, faction: Faction) = ???
 
-}
-
-case class DummyF() extends Faction {
-  override def costForTerraform: Cost = Cost(ResourceType.Worker, 3)
-
-  override def costForDwelling: List[Cost] = List(Cost(ResourceType.Worker, 2), Cost(ResourceType.Coin, 3))
-
-  override def costForTradingHouse: List[Cost] = List(Cost(ResourceType.Worker, 2), Cost(ResourceType.Coin, 3))
 }

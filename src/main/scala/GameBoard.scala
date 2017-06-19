@@ -36,8 +36,8 @@ case class GameBoard(private val tiles: Map[Hex, Tile], private val bridges: Lis
       .exists(_.buildBy == null)
   }
 
-  def isOccupied(hex: Hex): Boolean = {
-    tiles(hex).faction != null
+  def isOccupied(tile: Tile): Boolean = {
+    tile.faction != null
   }
 
   def tilesOccupiedBy(faction: Faction): Map[Hex, Tile] = {
@@ -62,14 +62,15 @@ case class GameBoard(private val tiles: Map[Hex, Tile], private val bridges: Lis
   }
 
   def placableDwellings(faction: Faction): List[Tile] = {
-    tiles.filter(t => hasCorrectTerrainFor(faction, t))
-    .filter(t => !isOccupied(t._1))
-    .values.toList
+    tiles.values.toList.filter(t => hasCorrectTerrainFor(faction, t))
+    .filter(t => !isOccupied(t))
   }
 
   def buildableDwellings(faction: Faction): List[Tile] = {
     tilesOccupiedBy(faction)
-      .flatMap(t => neighbours(t._1))
+      .keys.toList
+      .flatMap(neighbours)
+      .filter(t => !isOccupied(t))
   }
 
   def buildableBridges(faction: Faction): Seq[Bridge] = {
@@ -78,8 +79,8 @@ case class GameBoard(private val tiles: Map[Hex, Tile], private val bridges: Lis
       .filter(b => b.buildBy == null).toSeq
   }
 
-  private def hasCorrectTerrainFor(faction: Faction, tile: (Hex, Tile)) = {
-    tile._2.terrain == faction.terrain
+  private def hasCorrectTerrainFor(faction: Faction, tile:  Tile) = {
+    tile.terrain == faction.terrain
   }
 
   private def isOwnedBy(faction: Faction, tile: (Hex, Tile)) = {
