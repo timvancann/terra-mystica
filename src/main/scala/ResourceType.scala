@@ -1,14 +1,11 @@
-object ResourceType extends Enumeration {
-  type ResourceType = Value
-  val Coin, Priest, Worker, Bridge, Power = Value
-}
-
 trait Resource {
   def spend(n: Int): Unit
 
   def gain(n: Int): Unit
 
   def sacrifice(n: Int): Unit
+
+  def amountToSpend: Int
 }
 
 class GenericResource(var amount: Int = 0) extends Resource {
@@ -17,6 +14,8 @@ class GenericResource(var amount: Int = 0) extends Resource {
   override def gain(n: Int): Unit = amount += n
 
   override def sacrifice(n: Int): Unit = amount -= n
+
+  def amountToSpend: Int = amount
 }
 
 class PriestResource(factionSupply: FactionSupply, amount: Int = 5) extends GenericResource(amount) {
@@ -57,4 +56,6 @@ class PowerResource(var stage1: Int = 5, var stage2: Int = 7: Int, var stage3: I
     stage2 -= n * 2
     stage3 += n
   }
+
+  def amountToSpend: Int = stage3
 }

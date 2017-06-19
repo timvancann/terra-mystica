@@ -1,8 +1,10 @@
+import CultType.CultType
+
 import scala.collection.mutable.ListBuffer
 
 case class OrderSpace(bonus: Int, var faction: Faction = null)
 
-class Cult {
+case class Cult() {
 
   private val spaces = List(OrderSpace(3), OrderSpace(2), OrderSpace(2), OrderSpace(2), OrderSpace(1))
 
@@ -54,9 +56,10 @@ class Cult {
 }
 
 
-object CultBoard {
-  val fire = new Cult
-  val water = new Cult
-  val earth = new Cult
-  val air = new Cult
+case class CultBoard(cults: Map[CultType, Cult]) {
+  def placePriest(faction: Faction, where: (CultType, OrderSpace)): Unit = {
+    cults(where._1).placePriest(faction, where._2)
+  }
+
+  override def clone: CultBoard = ???
 }

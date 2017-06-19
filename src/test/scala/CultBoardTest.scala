@@ -7,11 +7,15 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
   var cult: Cult = _
   var faction: Faction = _
 
-  case class GenericFaction() extends Faction
+  case class TestFaction() extends Faction {
+    override def costForTerraform: Cost = mock[Cost]
+    override def costForDwelling: List[Cost] = List.empty
+    override def costForTradingHouse: List[Cost] = List.empty
+  }
 
   before {
     cult = new Cult
-    faction = GenericFaction()
+    faction = TestFaction()
 
     cult.addFaction(faction)
   }

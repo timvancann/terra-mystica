@@ -15,8 +15,9 @@ class FactionSupply(priests: Int = 5, bridge: Int = 3) {
   }
 }
 
-trait Faction {
+case class Cost(resource: ResourceType, n: Int)
 
+trait Faction {
   private val factionSupply = new FactionSupply
 
   private val supply = Map(
@@ -47,6 +48,18 @@ trait Faction {
   def sacrifice(resource: ResourceType, n: Int = 1): Unit = {
     supply(resource).sacrifice(n)
   }
-}
 
-object Dwellers extends Faction
+  def numberOfTimesResourcesToSpendFor(cost: List[Cost]): Int = {
+    cost.map(c => supply(c.resource).amountToSpend / c.n).min
+  }
+
+  def costForCult: Cost = Cost(ResourceType.Priest, 1)
+  def costForTerraform: Cost
+  def costForDwelling: List[Cost]
+  def costForTradingHouse: List[Cost]
+
+
+
+  override def clone: Faction = ???
+
+}
