@@ -67,6 +67,11 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
     tile.building = BuildingType.Dwelling
   }
 
+  def upgradableBuildings(faction: Faction): List[Tile] = {
+    tilesOccupiedBy(faction)
+    .filter(t => t.building == BuildingType.Dwelling | t.building == BuildingType.TradingHouse | t.building == BuildingType.Temple)
+  }
+
   def upgradeBuilding(tile: Tile, to: BuildingType): Unit = {
     tile.building = to
   }
@@ -103,13 +108,14 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
   }
 
   def buildDwelling(tile: Tile, faction: Faction): Unit = {
+    placeDwelling(tile, faction)
     tile.faction = faction
     val cost = faction.dwellingCost
     // TODO: add cost spending
 //    faction.spend(cost)
   }
 
-  override def clone: GameBoard = ???
+  override def clone: GameBoard = GameBoard(tiles.map(_.clone), bridges.map(_.clone))
 }
 
 sealed case class Hex(row: Int, col: Int)
@@ -121,11 +127,11 @@ case class Tile(hex: Hex,
                 var terrain: TerrainType,
                 var faction: Faction = null,
                 var building: BuildingType = null) {
-  override def clone(): Tile = ???
+  override def clone: Tile = Tile(hex, terrain, faction.clone, building)
 }
 
 case class Bridge(from: Hex,
                   to: Hex,
                   var buildBy: Faction = null) {
-  override def clone(): Bridge = ???
+  override def clone: Bridge = Bridge(from, to, buildBy.clone)
 }

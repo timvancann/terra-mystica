@@ -7,3 +7,6 @@ scalaVersion := "2.11.11"
 
 libraryDependencies += "org.scalatest"    %% "scalatest"                      % "3.0.3" % "test"
 libraryDependencies += "org.scalamock"    %% "scalamock-scalatest-support"    % "3.6.0" % "test"
+
+coverageEnabled := true
+coverageHighlighting := true

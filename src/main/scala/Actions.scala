@@ -1,3 +1,4 @@
+import BuildingType.BuildingType
 import CultType.CultType
 
 object Actions {
@@ -26,6 +27,12 @@ object Actions {
     }
   }
 
-  def upgradeBuilding(gameState: GameState, faction: Faction) = ???
+  def upgradeBuilding(to: BuildingType, tile: Tile): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      newState.gameBoard.upgradeBuilding(tile, to)
+      newState
+    }
+  }
 
 }

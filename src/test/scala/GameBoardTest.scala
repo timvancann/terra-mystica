@@ -142,4 +142,18 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
     gameBoard.bridgesFor(faction).length shouldBe 1
   }
 
+  test("upgradable buildings for dwelling") {
+    val faction = Faction(terrain = TerrainType.Mountains, dwellingCost = List.empty)
+    val tiles = gameBoard.placableDwellings(faction)
+    gameBoard.buildDwelling(tiles.head, faction)
+    gameBoard.upgradableBuildings(faction).length shouldBe 1
+  }
+
+  test("upgrade building from dwelling to stronghold") {
+    val faction = Faction(terrain = TerrainType.Mountains, dwellingCost = List.empty)
+    val tiles = gameBoard.placableDwellings(faction)
+    gameBoard.buildDwelling(tiles.head, faction)
+    gameBoard.upgradeBuilding(tiles.head, BuildingType.TradingHouse)
+    tiles.head.building shouldBe BuildingType.TradingHouse
+  }
 }

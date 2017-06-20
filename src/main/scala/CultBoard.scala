@@ -8,7 +8,7 @@ case class Cult() {
 
   private val spaces = List(OrderSpace(3), OrderSpace(2), OrderSpace(2), OrderSpace(2), OrderSpace(1))
 
-  private case class ProgressSpace(n: Int, var powerBonus: Int = 0, factions: ListBuffer[Faction] = ListBuffer.empty[Faction])
+  private case class ProgressSpace(n: Int, var powerBonus: Int, factions: ListBuffer[Faction] = ListBuffer.empty[Faction])
 
   private val progress: Seq[ProgressSpace] = (0 to 10)
     .map {
