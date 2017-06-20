@@ -80,6 +80,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
     tilesOccupiedBy(faction)
       .flatMap(t => neighbours(t.hex))
       .filter(t => !isOccupied(t))
+      .filter(t => hasCorrectTerrainFor(faction, t))
   }
 
   def buildableBridges(faction: Faction): Seq[Bridge] = {
