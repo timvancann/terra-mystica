@@ -62,11 +62,6 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
     tile.terrain = to
   }
 
-  def placeDwelling(tile: Tile, faction: Faction): Unit = {
-    tile.faction = faction
-    tile.building = BuildingType.Dwelling
-  }
-
   def upgradableBuildings(faction: Faction): List[Tile] = {
     tilesOccupiedBy(faction)
     .filter(t => t.building == BuildingType.Dwelling | t.building == BuildingType.TradingHouse | t.building == BuildingType.Temple)
@@ -81,11 +76,24 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
     .filter(t => !isOccupied(t))
   }
 
+  def placeDwelling(tile: Tile, faction: Faction): Unit = {
+    tile.faction = faction
+    tile.building = BuildingType.Dwelling
+  }
+
   def buildableDwellings(faction: Faction): List[Tile] = {
     tilesOccupiedBy(faction)
       .flatMap(t => neighbours(t.hex))
       .filter(t => !isOccupied(t))
       .filter(t => hasCorrectTerrainFor(faction, t))
+  }
+
+  def buildDwelling(tile: Tile, faction: Faction): Unit = {
+    placeDwelling(tile, faction)
+    tile.faction = faction
+    val cost = faction.dwellingCost
+    // TODO: add cost spending
+    //    faction.spend(cost)
   }
 
   def buildableBridges(faction: Faction): Seq[Bridge] = {
@@ -94,25 +102,18 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
       .filter(b => b.buildBy == null)
   }
 
+  def buildBridge(bridge: Bridge, faction: Faction): Unit = {
+    bridge.buildBy = faction
+    faction.sacrifice(ResourceType.Bridge)
+  }
+
+
   private def hasCorrectTerrainFor(faction: Faction, tile:  Tile) = {
     tile.terrain == faction.terrain
   }
 
   private def isOwnedBy(faction: Faction, tile: Tile) = {
     tile.faction == faction
-  }
-
-  def buildBridge(bridge: Bridge, faction: Faction): Unit = {
-    bridge.buildBy = faction
-    faction.sacrifice(ResourceType.Bridge)
-  }
-
-  def buildDwelling(tile: Tile, faction: Faction): Unit = {
-    placeDwelling(tile, faction)
-    tile.faction = faction
-    val cost = faction.dwellingCost
-    // TODO: add cost spending
-//    faction.spend(cost)
   }
 
   override def clone: GameBoard = GameBoard(tiles.map(_.clone), bridges.map(_.clone))

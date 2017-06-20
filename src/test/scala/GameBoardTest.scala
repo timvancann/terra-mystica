@@ -129,7 +129,6 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
     gameBoard.buildableDwellings(faction).length shouldBe 0
   }
 
-
   test("no buildable bridges, no bridge at tile") {
     val faction = Faction(terrain = TerrainType.Desert, dwellingCost = List.empty)
     gameBoard.buildableBridges(faction).length shouldBe 0
