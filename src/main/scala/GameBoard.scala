@@ -1,9 +1,7 @@
 import BuildingType.BuildingType
 import TerrainType.TerrainType
 
-import scala.collection.immutable
-
-case class GameBoard(private val tiles: Map[Hex, Tile], private val bridges: List[Bridge]) {
+case class GameBoard(private val tiles: List[Tile], private val bridges: List[Bridge]) {
 
   private val cubeDirections = List(
     Cube( 1, -1,  0),Cube( 1,  0, -1), Cube(0,  1, -1),
@@ -13,7 +11,7 @@ case class GameBoard(private val tiles: Map[Hex, Tile], private val bridges: Lis
   private def cubeToHex(cube: Cube) = {
     val col = cube.x + (cube.z - (cube.z & 1)) / 2
     val row = cube.z
-    Hex(col, row)
+    Hex(row, col)
   }
 
   private def hexToCube(hex: Hex) = {
@@ -23,12 +21,24 @@ case class GameBoard(private val tiles: Map[Hex, Tile], private val bridges: Lis
     Cube(x, y, z)
   }
 
-  private def neighbours(hex: Hex): List[Tile] = {
+  def neighbours(hex: Hex): List[Tile] = {
+    val (evenCol, oddCol) = tiles.map(_.hex).partition(h => (h.row & 1) == 0)
+    val maxRow = tiles.map(_.hex.row).max
+
+    def rowOnBoard(hex: Hex): Boolean = {
+      hex.row >= 0 & hex.row <= maxRow
+    }
+
+    def colOnBoard(hex: Hex): Boolean = {
+      val maxCol = if ((hex.row & 1) == 0) evenCol.map(_.col).max else oddCol.map(_.col).max
+      hex.col >= 0 & hex.col <= maxCol
+    }
+
     val cube = hexToCube(hex)
-    cubeDirections.map(c => c + cube)
-      .map(cubeToHex)
-      .filter(h => h.row > 0 & (h.col > 0 & (if ((h.row & 1) != 0) h.col<12 else h.col<13)))
-      .map(tiles)
+    val cubes = cubeDirections.map(c => c + cube)
+      val hexes = cubes.map(cubeToHex)
+    val filtered = hexes.filter(h => rowOnBoard(h) & colOnBoard(h))
+      filtered.map(h => tiles.find(_.hex == h).get)
   }
 
   def canBuildBridge(from: Hex, to: Hex): Boolean = {
@@ -40,7 +50,7 @@ case class GameBoard(private val tiles: Map[Hex, Tile], private val bridges: Lis
     tile.faction != null
   }
 
-  def tilesOccupiedBy(faction: Faction): Map[Hex, Tile] = {
+  def tilesOccupiedBy(faction: Faction): List[Tile] = {
     tiles.filter(isOwnedBy(faction, _))
   }
 
@@ -62,29 +72,28 @@ case class GameBoard(private val tiles: Map[Hex, Tile], private val bridges: Lis
   }
 
   def placableDwellings(faction: Faction): List[Tile] = {
-    tiles.values.toList.filter(t => hasCorrectTerrainFor(faction, t))
+    tiles.filter(t => hasCorrectTerrainFor(faction, t))
     .filter(t => !isOccupied(t))
   }
 
   def buildableDwellings(faction: Faction): List[Tile] = {
     tilesOccupiedBy(faction)
-      .keys.toList
-      .flatMap(neighbours)
+      .flatMap(t => neighbours(t.hex))
       .filter(t => !isOccupied(t))
   }
 
   def buildableBridges(faction: Faction): Seq[Bridge] = {
     tiles.filter(t => isOwnedBy(faction, t))
-      .flatMap(t => bridges.filter(b => b.to == t._1 | b.from == t._1))
-      .filter(b => b.buildBy == null).toSeq
+      .flatMap(t => bridges.filter(b => b.to == t.hex | b.from == t.hex))
+      .filter(b => b.buildBy == null)
   }
 
   private def hasCorrectTerrainFor(faction: Faction, tile:  Tile) = {
     tile.terrain == faction.terrain
   }
 
-  private def isOwnedBy(faction: Faction, tile: (Hex, Tile)) = {
-    tile._2.faction == faction
+  private def isOwnedBy(faction: Faction, tile: Tile) = {
+    tile.faction == faction
   }
 
   def buildBridge(bridge: Bridge, faction: Faction): Unit = {
@@ -107,7 +116,8 @@ sealed case class Cube(x: Int, y: Int, z: Int) {
   def +(other: Cube) = Cube(x + other.x, y + other.y, z + other.z)
 }
 
-case class Tile(var terrain: TerrainType,
+case class Tile(hex: Hex,
+                var terrain: TerrainType,
                 var faction: Faction = null,
                 var building: BuildingType = null) {
   override def clone(): Tile = ???
