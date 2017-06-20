@@ -40,6 +40,10 @@ case class Faction(terrain: TerrainType,
     supply(resource).spend(n)
   }
 
+  def spend(cost: List[Cost]): Unit = {
+    cost.foreach(c => spend(c.resource, c.n))
+  }
+
   def gain(resource: ResourceType, n: Int = 1): Unit = {
     supply(resource).gain(n)
   }

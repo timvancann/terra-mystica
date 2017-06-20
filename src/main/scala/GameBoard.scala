@@ -92,8 +92,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
     placeDwelling(tile, faction)
     tile.faction = faction
     val cost = faction.dwellingCost
-    // TODO: add cost spending
-    //    faction.spend(cost)
+    faction.spend(cost)
   }
 
   def buildableBridges(faction: Faction): Seq[Bridge] = {
