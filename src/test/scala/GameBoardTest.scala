@@ -1,4 +1,4 @@
-import TerrainType.TerrainType
+import BuildingType.Dwelling
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
 
@@ -29,12 +29,12 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("no bridges build for faction") {
-    val faction = Faction(terrain = TerrainType.Desert, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Desert)
     gameBoard.bridgesFor(faction).length shouldBe 0
   }
 
   test("no buildable bridges, no faction on board") {
-    val faction = Faction(terrain = TerrainType.Desert, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Desert)
     gameBoard.buildableBridges(faction).length shouldBe 0
   }
 
@@ -84,44 +84,52 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("no free placable dwellings") {
-    val faction = Faction(terrain = TerrainType.Desert, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Desert)
     gameBoard.placableDwellings(faction).length shouldBe 0
   }
 
   test("1 free placable dwellings") {
-    val faction = Faction(terrain = TerrainType.Forest, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Forest)
     val placable = gameBoard.placableDwellings(faction)
     placable.length shouldBe 1
     placable.head.terrain shouldBe TerrainType.Forest
   }
 
   test("three free placable dwellings") {
-    val faction = Faction(terrain = TerrainType.Mountains, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Mountains)
     val placable = gameBoard.placableDwellings(faction)
     placable.length shouldBe 3
   }
 
   test("build dwelling on board, no buildable tiles") {
-    val faction = Faction(terrain = TerrainType.Desert, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Desert)
     gameBoard.buildableDwellings(faction).length shouldBe 0
   }
 
   test("build dwelling on board, one buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List(Cost(ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.buildableDwellings(faction).length shouldBe 1
   }
 
+  test("build dwelling on board, check resources spend") {
+    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List(Cost(ResourceType.Worker, 1))))
+    faction.gain(ResourceType.Worker, 3)
+    val tiles = gameBoard.placableDwellings(faction)
+    gameBoard.buildDwelling(tiles.head, faction)
+    faction.numberOfTimesResourcesToSpendFor(List(Cost(ResourceType.Worker, 1))) shouldBe 2
+  }
+
   test("build dwelling on board, two buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List(Cost(ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles(1), faction)
     gameBoard.buildableDwellings(faction).length shouldBe 2
   }
 
   test("build dwelling on board, no free buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List(Cost(ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.buildDwelling(tiles(1), faction)
@@ -130,26 +138,26 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("no buildable bridges, no bridge at tile") {
-    val faction = Faction(terrain = TerrainType.Desert, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Desert)
     gameBoard.buildableBridges(faction).length shouldBe 0
   }
 
   test("one bridge build for faction") {
-    val faction = Faction(terrain = TerrainType.Plains, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Plains, buildingCost = Map(Dwelling -> List(Cost(ResourceType.Worker, 1))))
     gameBoard.buildDwelling(gameBoard.placableDwellings(faction).head, faction)
     gameBoard.buildBridge(gameBoard.buildableBridges(faction).head, faction)
     gameBoard.bridgesFor(faction).length shouldBe 1
   }
 
   test("upgradable buildings for dwelling") {
-    val faction = Faction(terrain = TerrainType.Mountains, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List(Cost(ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.upgradableBuildings(faction).length shouldBe 1
   }
 
   test("upgrade building from dwelling to stronghold") {
-    val faction = Faction(terrain = TerrainType.Mountains, dwellingCost = List.empty)
+    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List(Cost(ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.upgradeBuilding(tiles.head, BuildingType.TradingHouse)

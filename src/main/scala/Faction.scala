@@ -1,3 +1,4 @@
+import BuildingType.BuildingType
 import ResourceType.ResourceType
 import TerrainType.TerrainType
 
@@ -20,16 +21,17 @@ case class Cost(resource: ResourceType, n: Int)
 
 case class Faction(terrain: TerrainType,
                    cultCost: Cost = Cost(ResourceType.Priest, 1),
-                   terraformCost: Cost = Cost(ResourceType.Worker, 3),
-                   dwellingCost: List[Cost]) {
+                   var terraformCost: Cost = Cost(ResourceType.Worker, 3),
+                   var shipCost: List[Cost] = List(Cost(ResourceType.Priest, 1), Cost(ResourceType.Gold, 4)),
+                   buildingCost: Map[BuildingType, List[Cost]] = Map.empty) {
   private val factionSupply = new FactionSupply
 
   private val supply = Map(
-    ResourceType.Coin   -> new GenericResource,
+    ResourceType.Gold -> new GenericResource,
     ResourceType.Priest -> new PriestResource(factionSupply),
     ResourceType.Worker -> new GenericResource,
     ResourceType.Bridge -> new BridgeResource(factionSupply),
-    ResourceType.Power  -> constructPowerResource
+    ResourceType.Power -> constructPowerResource
   )
 
   def constructPowerResource: PowerResource = {
@@ -48,6 +50,10 @@ case class Faction(terrain: TerrainType,
     supply(resource).gain(n)
   }
 
+  def gain(cost: List[Cost]): Unit = {
+    cost.foreach(c => gain(c.resource, c.n))
+  }
+
   def exchange(from: ResourceType, to: ResourceType, n: Int = 1): Unit = {
     supply(from).spend(n)
     supply(to).gain(n)
@@ -64,3 +70,4 @@ case class Faction(terrain: TerrainType,
   override def clone: Faction = ???
 
 }
+

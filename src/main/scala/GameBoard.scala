@@ -1,5 +1,5 @@
-import BuildingType.BuildingType
-import TerrainType.TerrainType
+import BuildingType._
+import TerrainType._
 
 case class GameBoard(private val tiles: List[Tile], private val bridges: List[Bridge]) {
 
@@ -64,7 +64,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
 
   def upgradableBuildings(faction: Faction): List[Tile] = {
     tilesOccupiedBy(faction)
-    .filter(t => t.building == BuildingType.Dwelling | t.building == BuildingType.TradingHouse | t.building == BuildingType.Temple)
+    .filter(t => t.building == Dwelling | t.building == TradingHouse | t.building == Temple)
   }
 
   def upgradeBuilding(tile: Tile, to: BuildingType): Unit = {
@@ -78,7 +78,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
 
   def placeDwelling(tile: Tile, faction: Faction): Unit = {
     tile.faction = faction
-    tile.building = BuildingType.Dwelling
+    tile.building = Dwelling
   }
 
   def buildableDwellings(faction: Faction): List[Tile] = {
@@ -91,8 +91,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
   def buildDwelling(tile: Tile, faction: Faction): Unit = {
     placeDwelling(tile, faction)
     tile.faction = faction
-    val cost = faction.dwellingCost
-    faction.spend(cost)
+    faction.spend(faction.buildingCost(Dwelling))
   }
 
   def buildableBridges(faction: Faction): Seq[Bridge] = {

@@ -5,7 +5,7 @@ object BuildingType extends Enumeration {
 
 object ResourceType extends Enumeration {
   type ResourceType = Value
-  val Coin, Priest, Worker, Bridge, Power = Value
+  val Gold, Priest, Worker, Bridge, Power, Spade = Value
 }
 
 object CultType extends Enumeration {
@@ -16,5 +16,10 @@ object CultType extends Enumeration {
 object TerrainType extends Enumeration {
   type TerrainType = Value
   val Plains, Swamp, Lakes, Forest, Mountains, Wasteland, Desert, Sea = Value
+}
+
+object FactionType extends Enumeration {
+  type FactionType = Value
+  val Halflings = Value
 }
 
