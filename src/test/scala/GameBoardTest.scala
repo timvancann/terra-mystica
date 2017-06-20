@@ -135,10 +135,11 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
     gameBoard.buildableBridges(faction).length shouldBe 0
   }
 
-  //  test("one bridge build for faction") {
-  //    val faction = Faction(terrain = TerrainType.Desert, dwellingCost = mock[List[Cost]])
-  //    gameBoard.buildBridge(gameBoard.head, faction)
-  //    gameBoard.bridgesFor(faction).length shouldBe 1
-  //  }
+  test("one bridge build for faction") {
+    val faction = Faction(terrain = TerrainType.Plains, dwellingCost = List.empty)
+    gameBoard.buildDwelling(gameBoard.placableDwellings(faction).head, faction)
+    gameBoard.buildBridge(gameBoard.buildableBridges(faction).head, faction)
+    gameBoard.bridgesFor(faction).length shouldBe 1
+  }
 
 }
