@@ -35,5 +35,5 @@ object ActionType extends Enumeration {
 
 object PropertyType extends Enumeration {
   type PropertyType = Value
-  val CultType = Value
+  val CultType, TerrainType, Tile, Faction = Value
 }

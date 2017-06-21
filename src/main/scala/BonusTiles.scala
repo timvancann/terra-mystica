@@ -1,22 +1,34 @@
+import BuildingType.BuildingType
 import CultType._
-import PropertyType._
+import PropertyType.PropertyType
 import ResourceType._
+import TerrainType.TerrainType
 
-object BonusTiles {
+case class BonusTile(action: Map[PropertyType, Any] => GameState => GameState = _ => gameState => gameState,
+                     income: List[(ResourceType, Int)] = List.empty,
+                     passiveBonus: Faction => Unit = faction => Unit,
+                     passBonus: List[(BuildingType, Int)] = List.empty) {
+  var faction: Faction = _
+  var hasBeenUsed: Boolean = false
+}
 
-  trait BonusTile {
-    def action(faction: Faction, properties: Map[PropertyType, Any]): GameState => GameState
-    def income: List[(ResourceType, Int)]
-  }
+object BonusTileActions {
 
-  object Bon2 extends BonusTile {
-    override def action(faction: Faction, properties: Map[PropertyType, Any]): (GameState) => GameState =
-      gameState => {
-        val newState = gameState.clone
-        newState.cultBoard.advance(faction, properties(PropertyType.CultType).asInstanceOf[CultType])
-        newState
-      }
-    override def income: List[(ResourceType, Int)] = List((Gold, 2))
-  }
+  def gainSpade(properties: Map[PropertyType, Any]): (GameState) => GameState =
+    gameState => {
+      val newState = gameState.clone
+      gameState.gameBoard.terraform(
+        properties(PropertyType.Tile).asInstanceOf[Tile],
+        properties(PropertyType.TerrainType).asInstanceOf[TerrainType])
+      newState
+    }
 
+   def cultTrack(properties: Map[PropertyType, Any]): (GameState) => GameState =
+    gameState => {
+      val newState = gameState.clone
+      newState.cultBoard.advance(
+        properties(PropertyType.Faction).asInstanceOf[Faction],
+        properties(PropertyType.CultType).asInstanceOf[CultType])
+      newState
+    }
 }

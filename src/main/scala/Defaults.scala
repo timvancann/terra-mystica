@@ -3,6 +3,7 @@ import ResourceType._
 import TerrainType._
 import FactionType._
 import CultType._
+import BonusTileType._
 
 import scala.collection.mutable
 
@@ -17,7 +18,6 @@ object Defaults {
     TileBridge(Hex(1, 3), Hex(2, 2)),
     TileBridge(Hex(1, 4), Hex(2, 6))
   )
-
   val tiles = List(
     Tile(Hex(0, 0), Plains),
     Tile(Hex(0, 1), Mountains),
@@ -73,13 +73,13 @@ object Defaults {
     Tile(Hex(3, 10), Wasteland),
     Tile(Hex(3, 11), Plains)
   )
-
   val cults = Map(
     Water -> Cult(),
     Fire -> Cult(),
     Air -> Cult(),
     Earth -> Cult()
   )
+
   val defaultBuildings = mutable.Map(
     Dwelling -> 8,
     TradingHouse -> 5,
@@ -87,8 +87,6 @@ object Defaults {
     Sanctuary -> 1,
     Stronghold -> 1
   )
-
-
   val factions = Map(
     Halflings -> Faction(
       terrain = Plains,
@@ -104,6 +102,45 @@ object Defaults {
       ),
       availableBuildings = defaultBuildings,
       incomePerBuilding = Map.empty
+    )
+  )
+
+  val bonusTiles = Map(
+    Bon1 -> BonusTile(
+      BonusTileActions.gainSpade,
+      List((Gold, 2))
+    ),
+    Bon2 -> BonusTile(
+      BonusTileActions.cultTrack,
+      income = List((Gold, 4))
+    ),
+    Bon3 -> BonusTile(
+      income = List((Gold, 6))
+    ),
+    Bon4 -> BonusTile(
+      income = List((Power, 3)),
+      passiveBonus = faction => faction.shipTrack += 1
+    ),
+    Bon5 -> BonusTile(
+      income = List((Worker, 1), (Power, 3))
+    ),
+    Bon6 -> BonusTile(
+      income = List((Worker, 2)),
+      passBonus = List((Stronghold, 4), (Sanctuary, 4))
+    ),
+    Bon7 -> BonusTile(
+      income = List((Worker, 1)),
+      passBonus = List((TradingHouse, 2))
+    ),
+    Bon8 -> BonusTile(
+      income = List((Priest, 1))
+    ),
+    Bon9 -> BonusTile(
+      income = List((Gold, 2)),
+      passBonus = List((Dwelling, 1))
+    ),
+    Bon10 -> BonusTile(
+      income = List((Power, 3))
     )
   )
 }

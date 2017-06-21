@@ -1,3 +1,4 @@
+import BonusTileType.BonusTileType
 import BuildingType._
 import ResourceType._
 import TerrainType._
@@ -35,6 +36,7 @@ case class Faction(terrain: TerrainType,
   var victoryPoints = 20
   var shipTrack = 0
   var spadeTrack = 0
+  var bonusTile: BonusTile = _
 
   private val supply = Map(
     Gold -> new GenericResource,
@@ -128,6 +130,8 @@ case class Faction(terrain: TerrainType,
     victoryPoints -= (power - 1)
   }
 
+  def changeBonusTile(newBonusTile: BonusTileType) = {
+  }
 
   override def clone: Faction = ???
 
