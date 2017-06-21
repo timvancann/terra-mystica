@@ -1,3 +1,4 @@
+import ResourceType.ResourceType
 import TerrainType.TerrainType
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
@@ -10,7 +11,7 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
 
   before {
     cult = new Cult
-    faction = Faction(mock[TerrainType], mock[Cost], mock[Cost], List.empty)
+    faction = Faction(mock[TerrainType])
 
     cult.addFaction(faction)
   }

@@ -12,21 +12,21 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
 
   test("gain a worker") {
     faction.gain(ResourceType.Worker)
-    faction.numberOfTimesResourcesToSpendFor(List(Cost(ResourceType.Worker, 1))) shouldBe 1
+    faction.numberOfTimesResourcesToSpendFor(List((ResourceType.Worker, 1))) shouldBe 1
   }
 
   test("gain multiple resources") {
-    faction.gain(List(Cost(ResourceType.Worker, 2), Cost(ResourceType.Gold, 5)))
-    faction.numberOfTimesResourcesToSpendFor(List(Cost(ResourceType.Worker, 2), Cost(ResourceType.Gold, 5))) shouldBe 1
+    faction.gain(List((ResourceType.Worker, 2), (ResourceType.Gold, 5)))
+    faction.numberOfTimesResourcesToSpendFor(List((ResourceType.Worker, 2), (ResourceType.Gold, 5))) shouldBe 1
   }
 
   test("has resources for single item") {
-    faction.gain(List(Cost(ResourceType.Worker, 2), Cost(ResourceType.Gold, 5)))
-    faction.numberOfTimesResourcesToSpendFor(List(Cost(ResourceType.Worker, 1), Cost(ResourceType.Gold, 3))) shouldBe 1
+    faction.gain(List((ResourceType.Worker, 2), (ResourceType.Gold, 5)))
+    faction.numberOfTimesResourcesToSpendFor(List((ResourceType.Worker, 1), (ResourceType.Gold, 3))) shouldBe 1
   }
 
   test("has resources for multiple item") {
-    faction.gain(List(Cost(ResourceType.Worker, 2), Cost(ResourceType.Gold, 5)))
-    faction.numberOfTimesResourcesToSpendFor(List(Cost(ResourceType.Worker, 1), Cost(ResourceType.Gold, 2))) shouldBe 2
+    faction.gain(List((ResourceType.Worker, 2), (ResourceType.Gold, 5)))
+    faction.numberOfTimesResourcesToSpendFor(List((ResourceType.Worker, 1), (ResourceType.Gold, 2))) shouldBe 2
   }
 }

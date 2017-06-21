@@ -1,11 +1,13 @@
-import BuildingType.BuildingType
-import ResourceType.ResourceType
-import TerrainType.TerrainType
+import BuildingType._
+import ResourceType._
+import TerrainType._
+
+import scala.collection.mutable
 
 class FactionSupply(priests: Int = 5, bridge: Int = 3) {
   val supply = Map(
-    ResourceType.Priest -> new GenericResource(5),
-    ResourceType.Bridge -> new GenericResource(3)
+    Priest -> new GenericResource(5),
+    Bridge -> new GenericResource(3)
   )
 
   def restock(resource: ResourceType): Unit = {
@@ -17,21 +19,21 @@ class FactionSupply(priests: Int = 5, bridge: Int = 3) {
   }
 }
 
-case class Cost(resource: ResourceType, n: Int)
-
 case class Faction(terrain: TerrainType,
-                   cultCost: Cost = Cost(ResourceType.Priest, 1),
-                   var terraformCost: Cost = Cost(ResourceType.Worker, 3),
-                   var shipCost: List[Cost] = List(Cost(ResourceType.Priest, 1), Cost(ResourceType.Gold, 4)),
-                   buildingCost: Map[BuildingType, List[Cost]] = Map.empty) {
+                   cultCost: (ResourceType, Int) = (Priest, 1),
+                   var terraformCost: (ResourceType, Int) = (Worker, 3),
+                   var shipCost: List[(ResourceType, Int)] = List((Priest, 1), (Gold, 4)),
+                   buildingCost: Map[BuildingType, List[(ResourceType, Int)]] = Map.empty,
+                   availableBuildings: mutable.Map[BuildingType, Int] = mutable.Map.empty,
+                   incomePerBuilding: Map[BuildingType, List[(ResourceType, Int)]] = Map.empty) {
   private val factionSupply = new FactionSupply
 
   private val supply = Map(
-    ResourceType.Gold -> new GenericResource,
-    ResourceType.Priest -> new PriestResource(factionSupply),
-    ResourceType.Worker -> new GenericResource,
-    ResourceType.Bridge -> new BridgeResource(factionSupply),
-    ResourceType.Power -> constructPowerResource
+    Gold -> new GenericResource,
+    Priest -> new PriestResource(factionSupply),
+    Worker -> new GenericResource,
+    Bridge -> new BridgeResource(factionSupply),
+    Power -> constructPowerResource
   )
 
   def constructPowerResource: PowerResource = {
@@ -42,16 +44,16 @@ case class Faction(terrain: TerrainType,
     supply(resource).spend(n)
   }
 
-  def spend(cost: List[Cost]): Unit = {
-    cost.foreach(c => spend(c.resource, c.n))
+  def spend(cost: List[(ResourceType, Int)]): Unit = {
+    cost.foreach(c => spend(c._1, c._2))
   }
 
   def gain(resource: ResourceType, n: Int = 1): Unit = {
     supply(resource).gain(n)
   }
 
-  def gain(cost: List[Cost]): Unit = {
-    cost.foreach(c => gain(c.resource, c.n))
+  def gain(cost: List[(ResourceType, Int)]): Unit = {
+    cost.foreach(c => gain(c._1, c._2))
   }
 
   def exchange(from: ResourceType, to: ResourceType, n: Int = 1): Unit = {
@@ -63,8 +65,21 @@ case class Faction(terrain: TerrainType,
     supply(resource).sacrifice(n)
   }
 
-  def numberOfTimesResourcesToSpendFor(cost: List[Cost]): Int = {
-    cost.map(c => supply(c.resource).amountToSpend / c.n).min
+  def numberOfTimesResourcesToSpendFor(cost: List[(ResourceType, Int)]): Int = {
+    cost.map(c => supply(c._1).amountToSpend / c._2).min
+  }
+
+  def buildBrige(): Unit = {
+    supply(Bridge).spend(1)
+  }
+
+  def buildDWelling(): Unit = {
+    availableBuildings(Dwelling) -= 1
+  }
+
+  def upgrade(from: BuildingType, to: BuildingType) {
+    availableBuildings(from) += 1
+    availableBuildings(to) -= 1
   }
 
   override def clone: Faction = ???

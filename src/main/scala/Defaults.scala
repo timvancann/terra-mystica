@@ -3,16 +3,18 @@ import ResourceType._
 import TerrainType._
 import FactionType._
 
+import scala.collection.mutable.Stack
+
 object Defaults {
 
   val bridges = List(
-    Bridge(Hex(0, 0), Hex(2, 2)),
-    Bridge(Hex(0, 6), Hex(2, 6)),
-    Bridge(Hex(0, 10), Hex(2, 10)),
-    Bridge(Hex(1, 0), Hex(3, 0)),
-    Bridge(Hex(1, 0), Hex(2, 2)),
-    Bridge(Hex(1, 3), Hex(2, 2)),
-    Bridge(Hex(1, 4), Hex(2, 6))
+    TileBridge(Hex(0, 0), Hex(2, 2)),
+    TileBridge(Hex(0, 6), Hex(2, 6)),
+    TileBridge(Hex(0, 10), Hex(2, 10)),
+    TileBridge(Hex(1, 0), Hex(3, 0)),
+    TileBridge(Hex(1, 0), Hex(2, 2)),
+    TileBridge(Hex(1, 3), Hex(2, 2)),
+    TileBridge(Hex(1, 4), Hex(2, 6))
   )
 
   val tiles = List(
@@ -71,18 +73,24 @@ object Defaults {
     Tile(Hex(3, 11), Plains)
   )
 
+  val terrains = Map.empty
+  val cultCost = Map.empty
+  val terraformCost = Map.empty
+  val shipCost = Map.empty
+  val buildingCost = Map.empty
+
   val factions = Map(
     Halflings -> Faction(
       Plains,
-      Cost(Priest, 1),
-      Cost(Worker, 3),
-      List(Cost(Priest, 1), Cost(Gold, 4)),
+      (Priest, 1),
+      (Worker, 3),
+      List((Priest, 1), (Gold, 4)),
       Map(
-        Dwelling -> List(Cost(Worker, 1), Cost(Gold, 2)),
-        TradingHouse -> List(Cost(Worker, 2), Cost(Gold, 6)),
-        Temple -> List(Cost(Worker, 2), Cost(Gold, 5)),
-        Sanctuary -> List(Cost(Worker, 4), Cost(Gold, 6)),
-        Stronghold -> List(Cost(Worker, 4), Cost(Gold, 8))
+        Dwelling -> List((Worker, 1), (Gold, 2)),
+        TradingHouse -> List((Worker, 2), (Gold, 6)),
+        Temple -> List((Worker, 2), (Gold, 5)),
+        Sanctuary -> List((Worker, 4), (Gold, 6)),
+        Stronghold -> List((Worker, 4), (Gold, 8))
       )
     )
   )

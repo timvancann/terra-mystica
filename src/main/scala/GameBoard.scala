@@ -1,7 +1,8 @@
 import BuildingType._
+import ResourceType.Bridge
 import TerrainType._
 
-case class GameBoard(private val tiles: List[Tile], private val bridges: List[Bridge]) {
+case class GameBoard(private val tiles: List[Tile], private val bridges: List[TileBridge]) {
 
   private val cubeDirections = List(
     Cube( 1, -1,  0),Cube( 1,  0, -1), Cube(0,  1, -1),
@@ -54,7 +55,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
     tiles.filter(isOwnedBy(faction, _))
   }
 
-  def bridgesFor(faction: Faction): List[Bridge] = {
+  def bridgesFor(faction: Faction): List[TileBridge] = {
     bridges.filter(_.buildBy == faction)
   }
 
@@ -94,15 +95,15 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Br
     faction.spend(faction.buildingCost(Dwelling))
   }
 
-  def buildableBridges(faction: Faction): Seq[Bridge] = {
+  def buildableBridges(faction: Faction): Seq[TileBridge] = {
     tiles.filter(t => isOwnedBy(faction, t))
       .flatMap(t => bridges.filter(b => b.to == t.hex | b.from == t.hex))
       .filter(b => b.buildBy == null)
   }
 
-  def buildBridge(bridge: Bridge, faction: Faction): Unit = {
+  def buildBridge(bridge: TileBridge, faction: Faction): Unit = {
     bridge.buildBy = faction
-    faction.sacrifice(ResourceType.Bridge)
+    faction.sacrifice(Bridge)
   }
 
 
@@ -129,8 +130,8 @@ case class Tile(hex: Hex,
   override def clone: Tile = Tile(hex, terrain, faction.clone, building)
 }
 
-case class Bridge(from: Hex,
-                  to: Hex,
-                  var buildBy: Faction = null) {
-  override def clone: Bridge = Bridge(from, to, buildBy.clone)
+case class TileBridge(from: Hex,
+                      to: Hex,
+                      var buildBy: Faction = null) {
+  override def clone: TileBridge = TileBridge(from, to, buildBy.clone)
 }
