@@ -6,8 +6,8 @@ import scala.collection.mutable
 
 class FactionSupply(priests: Int = 5, bridge: Int = 3) {
   val supply = Map(
-    Priest -> new GenericResource(5),
-    Bridge -> new GenericResource(3)
+    Priest -> new GenericResource(priests),
+    Bridge -> new GenericResource(bridge)
   )
 
   def restock(resource: ResourceType): Unit = {
@@ -35,6 +35,10 @@ case class Faction(terrain: TerrainType,
     Bridge -> new BridgeResource(factionSupply),
     Power -> constructPowerResource
   )
+
+  def addInititialResource(resources: List[(ResourceType, Int)]): Unit = {
+    resources.foreach(r => supply(r._1).gain(r._2))
+  }
 
   def constructPowerResource: PowerResource = {
     new PowerResource(5, 7)
@@ -69,11 +73,15 @@ case class Faction(terrain: TerrainType,
     cost.map(c => supply(c._1).amountToSpend / c._2).min
   }
 
-  def buildBrige(): Unit = {
+  def buildingsAvailableFor(buildingType: BuildingType): Int = {
+    availableBuildings(buildingType)
+  }
+
+  def buildBrige: Unit = {
     supply(Bridge).spend(1)
   }
 
-  def buildDWelling(): Unit = {
+  def buildDWelling: Unit = {
     availableBuildings(Dwelling) -= 1
   }
 
