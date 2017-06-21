@@ -94,7 +94,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
     income.filter(_._1 == Gold).head._2 shouldBe 3
   }
 
-  test("calculate income for a multiple buildings, single resources") {
+  test("calculate income for a multiple buildings, single resource") {
     val faction = Faction(mock[TerrainType],
       availableBuildings = mutable.Map(
         Dwelling -> 2,
@@ -109,5 +109,25 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
     faction.upgrade(Dwelling, TradingHouse)
     val income = faction.calculateIncome
     income.filter(_._1 == Worker).head._2 shouldBe 3
+  }
+
+  test("calculate income for a multiple buildings, multiple resources") {
+    val faction = Faction(mock[TerrainType],
+      availableBuildings = mutable.Map(
+        Dwelling -> 2,
+        TradingHouse -> 1
+      ),
+      incomePerBuilding = Map(
+        Dwelling -> List(List((Worker, 2)), List((Worker, 3))),
+        TradingHouse -> List(List((Power, 2), (Gold, 3)))
+      ))
+    faction.buildDWelling
+    faction.buildDWelling
+    faction.buildDWelling
+    faction.upgrade(Dwelling, TradingHouse)
+    val income = faction.calculateIncome
+    income.filter(_._1 == Worker).head._2 shouldBe 5
+    income.filter(_._1 == Power).head._2 shouldBe 2
+    income.filter(_._1 == Gold).head._2 shouldBe 3
   }
 }
