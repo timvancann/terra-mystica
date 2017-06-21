@@ -1,5 +1,5 @@
-import CultType.CultType
-import PropertyType.PropertyType
+import CultType._
+import PropertyType._
 import ResourceType._
 
 object BonusTiles {

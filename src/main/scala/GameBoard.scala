@@ -5,8 +5,8 @@ import TerrainType._
 case class GameBoard(private val tiles: List[Tile], private val bridges: List[TileBridge]) {
 
   private val cubeDirections = List(
-    Cube( 1, -1,  0),Cube( 1,  0, -1), Cube(0,  1, -1),
-    Cube(-1,  1,  0),Cube(-1,  0,  1), Cube(0, -1,  1)
+    Cube(1, -1, 0), Cube(1, 0, -1), Cube(0, 1, -1),
+    Cube(-1, 1, 0), Cube(-1, 0, 1), Cube(0, -1, 1)
   )
 
   private def cubeToHex(cube: Cube) = {
@@ -23,6 +23,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
   }
 
   def neighbours(hex: Hex): List[Tile] = {
+    // todo neighbours by bridge and boat
     val (evenCol, oddCol) = tiles.map(_.hex).partition(h => (h.row & 1) == 0)
     val maxRow = tiles.map(_.hex.row).max
 
@@ -37,9 +38,9 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
 
     val cube = hexToCube(hex)
     val cubes = cubeDirections.map(c => c + cube)
-      val hexes = cubes.map(cubeToHex)
+    val hexes = cubes.map(cubeToHex)
     val filtered = hexes.filter(h => rowOnBoard(h) & colOnBoard(h))
-      filtered.map(h => tiles.find(_.hex == h).get)
+    filtered.map(h => tiles.find(_.hex == h).get)
   }
 
   def canBuildBridge(from: Hex, to: Hex): Boolean = {
@@ -63,9 +64,21 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
     tile.terrain = to
   }
 
+  private def unoccupiedNeighboursFor(faction: Faction) = {
+    tilesOccupiedBy(faction)
+      .flatMap(t => neighbours(t.hex))
+      .filter(t => !isOccupied(t))
+  }
+
+  def terraformableFor(faction: Faction): List[Tile] = {
+    unoccupiedNeighboursFor(faction)
+      .filter(t => t.terrain != faction.terrain)
+      .filter(t => t.terrain != Sea)
+  }
+
   def upgradableBuildings(faction: Faction): List[Tile] = {
     tilesOccupiedBy(faction)
-    .filter(t => t.building == Dwelling | t.building == TradingHouse | t.building == Temple)
+      .filter(t => t.building == Dwelling | t.building == TradingHouse | t.building == Temple)
   }
 
   def upgradeBuilding(tile: Tile, to: BuildingType): Unit = {
@@ -74,19 +87,17 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
 
   def placableDwellings(faction: Faction): List[Tile] = {
     tiles.filter(t => hasCorrectTerrainFor(faction, t))
-    .filter(t => !isOccupied(t))
+      .filter(t => !isOccupied(t))
   }
 
   def placeDwelling(tile: Tile, faction: Faction): Unit = {
     tile.faction = faction
     tile.building = Dwelling
+    faction.buildDWelling
   }
 
   def buildableDwellings(faction: Faction): List[Tile] = {
-    tilesOccupiedBy(faction)
-      .flatMap(t => neighbours(t.hex))
-      .filter(t => !isOccupied(t))
-      .filter(t => hasCorrectTerrainFor(faction, t))
+    unoccupiedNeighboursFor(faction).filter(t => hasCorrectTerrainFor(faction, t))
   }
 
   def buildDwelling(tile: Tile, faction: Faction): Unit = {
@@ -107,7 +118,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
   }
 
 
-  private def hasCorrectTerrainFor(faction: Faction, tile:  Tile) = {
+  private def hasCorrectTerrainFor(faction: Faction, tile: Tile) = {
     tile.terrain == faction.terrain
   }
 
@@ -119,6 +130,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
 }
 
 sealed case class Hex(row: Int, col: Int)
+
 sealed case class Cube(x: Int, y: Int, z: Int) {
   def +(other: Cube) = Cube(x + other.x, y + other.y, z + other.z)
 }

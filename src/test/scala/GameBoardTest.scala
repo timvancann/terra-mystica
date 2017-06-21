@@ -1,6 +1,8 @@
-import BuildingType.Dwelling
+import BuildingType._
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
+
+import scala.collection.mutable
 
 class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeAndAfter {
 
@@ -107,14 +109,18 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("build dwelling on board, one buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(Dwelling -> 10),
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.buildableDwellings(faction).length shouldBe 1
   }
 
   test("build dwelling on board, check resources spend") {
-    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(Dwelling -> 10),
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     faction.gain(ResourceType.Worker, 3)
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
@@ -122,14 +128,18 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("build dwelling on board, two buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(Dwelling -> 10),
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles(1), faction)
     gameBoard.buildableDwellings(faction).length shouldBe 2
   }
 
   test("build dwelling on board, no free buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(Dwelling -> 10),
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.buildDwelling(tiles(1), faction)
@@ -143,24 +153,46 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("one bridge build for faction") {
-    val faction = Faction(terrain = TerrainType.Plains, buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+    val faction = Faction(terrain = TerrainType.Plains,
+      availableBuildings = mutable.Map(Dwelling -> 10),
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     gameBoard.buildDwelling(gameBoard.placableDwellings(faction).head, faction)
     gameBoard.buildBridge(gameBoard.buildableBridges(faction).head, faction)
     gameBoard.bridgesFor(faction).length shouldBe 1
   }
 
   test("upgradable buildings for dwelling") {
-    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(Dwelling -> 10),
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.upgradableBuildings(faction).length shouldBe 1
   }
 
   test("upgrade building from dwelling to stronghold") {
-    val faction = Faction(terrain = TerrainType.Mountains, buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(Dwelling -> 10, TradingHouse -> 10),
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.upgradeBuilding(tiles.head, BuildingType.TradingHouse)
     tiles.head.building shouldBe BuildingType.TradingHouse
+  }
+
+  test("terraformable for faction should only return terrain different from home terrain") {
+    val faction = Faction(terrain = TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
+    gameBoard.placeDwelling(gameBoard.placableDwellings(faction).head, faction)
+    val tiles = gameBoard.terraformableFor(faction)
+    tiles.length shouldBe 2
+  }
+
+  test("terraformed tile should not show up in terraformable list") {
+    val faction = Faction(terrain = TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
+    gameBoard.placeDwelling(gameBoard.placableDwellings(faction).head, faction)
+    var tiles = gameBoard.terraformableFor(faction)
+    gameBoard.terraform(tiles.head, faction.terrain)
+    tiles = gameBoard.terraformableFor(faction)
+    tiles.length shouldBe 1
   }
 }

@@ -1,21 +1,22 @@
-import ActionType._
-import BuildingType.BuildingType
-import CultType.CultType
+import BuildingType._
+import CultType._
+import TerrainType.TerrainType
 
 object Actions {
 
-  def generatePlacePriestOnCult(gameState: GameState, faction: Faction): Seq[(ActionType, (GameState) => GameState)] = {
-    val cost = faction.cultCost
-    val n = faction.numberOfTimesResourcesToSpendFor(List(cost))
-    if (n > 0) {
-      val spaces: Seq[(CultType, OrderSpace)] = (for {
-        cult <- gameState.cultBoard.cults
-        space <- cult._2.availableOrderSpaces
-        if cult._2.currentProgress(faction) < 10
-      } yield (cult._1, space)) (collection.breakOut)
-      spaces.map(s => (PlacePriest, placePriestOnCult(faction, s)))
-    } else {
-      List.empty
+  def placeInitialDwellings(faction: Faction, where: Tile): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      newState.gameBoard.placeDwelling(where, faction)
+      newState
+    }
+  }
+
+  def terraform(tile: Tile, to: TerrainType): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      newState.gameBoard.terraform(tile, to)
+      newState
     }
   }
 
