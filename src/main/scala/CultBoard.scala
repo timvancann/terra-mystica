@@ -61,5 +61,9 @@ case class CultBoard(cults: Map[CultType, Cult]) {
     cults(where._1).placePriest(faction, where._2)
   }
 
+  def advance(faction: Faction, cultType: CultType): Unit = {
+    cults(cultType).advance(faction, 1)
+  }
+
   override def clone: CultBoard = ???
 }

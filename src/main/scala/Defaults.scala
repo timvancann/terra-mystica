@@ -2,8 +2,9 @@ import BuildingType._
 import ResourceType._
 import TerrainType._
 import FactionType._
+import CultType._
 
-import scala.collection.mutable.Stack
+import scala.collection.mutable
 
 object Defaults {
 
@@ -73,25 +74,37 @@ object Defaults {
     Tile(Hex(3, 11), Plains)
   )
 
-  val terrains = Map.empty
-  val cultCost = Map.empty
-  val terraformCost = Map.empty
-  val shipCost = Map.empty
-  val buildingCost = Map.empty
+  val cults = Map(
+    Water -> Cult(),
+    Fire -> Cult(),
+    Air -> Cult(),
+    Earth -> Cult()
+  )
+
+  val defaultBuildings = mutable.Map(
+    Dwelling -> 8,
+    TradingHouse -> 5,
+    Temple -> 3,
+    Sanctuary -> 1,
+    Stronghold -> 1
+  )
+
 
   val factions = Map(
     Halflings -> Faction(
-      Plains,
-      (Priest, 1),
-      (Worker, 3),
-      List((Priest, 1), (Gold, 4)),
-      Map(
+      terrain = Plains,
+      cultCost = (Priest, 1),
+      terraformCost = (Worker, 3),
+      shipCost = List((Priest, 1), (Gold, 4)),
+      buildingCost = Map(
         Dwelling -> List((Worker, 1), (Gold, 2)),
         TradingHouse -> List((Worker, 2), (Gold, 6)),
         Temple -> List((Worker, 2), (Gold, 5)),
         Sanctuary -> List((Worker, 4), (Gold, 6)),
         Stronghold -> List((Worker, 4), (Gold, 8))
-      )
+      ),
+      availableBuildings = defaultBuildings,
+      incomePerBuilding = Map.empty
     )
   )
 }

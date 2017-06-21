@@ -23,3 +23,17 @@ object FactionType extends Enumeration {
   val Halflings = Value
 }
 
+object BonusTileType extends Enumeration {
+  type BonusTileType = Value
+  val Bon1, Bon2, Bon3, Bon4, Bon5, Bon6, Bon7, Bon8, Bon9, Bon10 = Value
+}
+
+object ActionType extends Enumeration {
+  type ActionType = Value
+  val PlacePriest, AdvanceCult = Value
+}
+
+object PropertyType extends Enumeration {
+  type PropertyType = Value
+  val CultType = Value
+}
