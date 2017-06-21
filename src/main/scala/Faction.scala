@@ -25,7 +25,7 @@ case class Faction(terrain: TerrainType,
                    var shipCost: List[(ResourceType, Int)] = List((Priest, 1), (Gold, 4)),
                    buildingCost: Map[BuildingType, List[(ResourceType, Int)]] = Map.empty,
                    availableBuildings: mutable.Map[BuildingType, Int] = mutable.Map.empty,
-                   incomePerBuilding: Map[BuildingType, List[(ResourceType, Int)]] = Map.empty) {
+                   incomePerBuilding: Map[BuildingType, List[List[(ResourceType, Int)]]] = Map.empty) {
   private val factionSupply = new FactionSupply
 
   private val supply = Map(
@@ -90,14 +90,20 @@ case class Faction(terrain: TerrainType,
     availableBuildings(to) -= 1
   }
 
-//  def calculateIncome: List[(ResourceType, Int)] = {
-//    incomePerBuilding.map(kv => kv._2
-//      .reverse
-//      .take(availableBuildings(kv._1)))
-//      .foldLeft((_, 0))((res, lst) => {
-//
-//      })
-//  }
+  def calculateIncome: List[(ResourceType, Int)] = {
+    incomePerBuilding.map(kv =>
+      kv._2
+        .reverse
+        .drop(availableBuildings(kv._1))
+        .flatten
+        .groupBy(_._1)
+        .map(kv => kv._1 -> kv._2.map(_._2).sum)
+        .toList
+      ).toList.flatten
+      .groupBy(_._1)
+      .map(kv => kv._1 -> kv._2.map(_._2).sum)
+      .toList
+  }
 
   override def clone: Faction = ???
 

@@ -14,10 +14,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
       availableBuildings = mutable.Map(
         Dwelling -> 8,
         TradingHouse -> 4
-      ),
-    incomePerBuilding = Map(
-      Dwelling -> List((Worker, 2))
-    ))
+      ))
   }
 
   test("gain a worker") {
@@ -70,9 +67,47 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
     faction.buildingsAvailableFor(TradingHouse) shouldBe 3
   }
 
-//  test("calculate income for a single dwelling") {
-//    faction.buildDWelling
-//    val income = faction.calculateIncome
-//    income.head._2 shouldBe 2
-//  }
+  test("calculate income for a single building, single resource") {
+    val faction = Faction(mock[TerrainType],
+      availableBuildings = mutable.Map(
+        Dwelling -> 1
+      ),
+      incomePerBuilding = Map(
+        Dwelling -> List(List((Worker, 2)))
+      ))
+    faction.buildDWelling
+    val income = faction.calculateIncome
+    income.filter(_._1 == Worker).head._2 shouldBe 2
+  }
+
+  test("calculate income for a single building, multiple resources") {
+    val faction = Faction(mock[TerrainType],
+      availableBuildings = mutable.Map(
+        Dwelling -> 1
+      ),
+      incomePerBuilding = Map(
+        Dwelling -> List(List((Worker, 2), (Gold, 3)))
+      ))
+    faction.buildDWelling
+    val income = faction.calculateIncome
+    income.filter(_._1 == Worker).head._2 shouldBe 2
+    income.filter(_._1 == Gold).head._2 shouldBe 3
+  }
+
+  test("calculate income for a multiple buildings, single resources") {
+    val faction = Faction(mock[TerrainType],
+      availableBuildings = mutable.Map(
+        Dwelling -> 2,
+        TradingHouse -> 1
+      ),
+      incomePerBuilding = Map(
+        Dwelling -> List(List((Worker, 2)), List((Worker, 3))),
+        TradingHouse -> List(List((Worker, 1)))
+      ))
+    faction.buildDWelling
+    faction.buildDWelling
+    faction.upgrade(Dwelling, TradingHouse)
+    val income = faction.calculateIncome
+    income.filter(_._1 == Worker).head._2 shouldBe 3
+  }
 }
