@@ -85,6 +85,18 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
     tile.building = to
   }
 
+  def possiblePowerGainFor(faction: Faction, tile: Tile): Int = {
+    neighbours(tile.hex)
+      .filter(_.faction == faction)
+      .map(t => {
+        t.building match {
+          case BuildingType.Stronghold | BuildingType.Sanctuary => 3
+          case BuildingType.Temple | BuildingType.TradingHouse => 2
+          case _ => 1
+        }
+      }).sum
+  }
+
   def placableDwellings(faction: Faction): List[Tile] = {
     tiles.filter(t => hasCorrectTerrainFor(faction, t))
       .filter(t => !isOccupied(t))

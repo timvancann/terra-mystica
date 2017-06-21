@@ -21,12 +21,20 @@ class FactionSupply(priests: Int = 5, bridge: Int = 3) {
 
 case class Faction(terrain: TerrainType,
                    cultCost: (ResourceType, Int) = (Priest, 1),
-                   var terraformCost: (ResourceType, Int) = (Worker, 3),
-                   var shipCost: List[(ResourceType, Int)] = List((Priest, 1), (Gold, 4)),
+                   terraformCost: List[(ResourceType, Int)] = List((Worker, 3), (Worker, 2), (Worker, 1)),
+                   shipCost: List[(ResourceType, Int)] = List((Priest, 1), (Gold, 4)),
                    buildingCost: Map[BuildingType, List[(ResourceType, Int)]] = Map.empty,
                    availableBuildings: mutable.Map[BuildingType, Int] = mutable.Map.empty,
-                   incomePerBuilding: Map[BuildingType, List[List[(ResourceType, Int)]]] = Map.empty) {
+                   incomePerBuilding: Map[BuildingType, List[List[(ResourceType, Int)]]] = Map.empty,
+                   private val victoryPointsPerShipTrack: List[Int] = List(2, 3, 4),
+                   private val victoryPointsPerSpadeTrack: List[Int] = List(6, 6),
+                   hasSpadeTrack: Boolean = true
+                  ) {
   private val factionSupply = new FactionSupply
+
+  var victoryPoints = 20
+  var shipTrack = 0
+  var spadeTrack = 0
 
   private val supply = Map(
     Gold -> new GenericResource,
@@ -99,11 +107,27 @@ case class Faction(terrain: TerrainType,
         .groupBy(_._1)
         .map(kv => kv._1 -> kv._2.map(_._2).sum)
         .toList
-      ).toList.flatten
+    ).toList.flatten
       .groupBy(_._1)
       .map(kv => kv._1 -> kv._2.map(_._2).sum)
       .toList
   }
+
+  def advanceShipTrack: Unit = {
+    shipTrack += 1
+    victoryPoints += victoryPointsPerShipTrack(shipTrack)
+  }
+
+  def advanceSpadeTrack: Unit = {
+    spadeTrack += 1
+    victoryPoints += victoryPointsPerSpadeTrack(spadeTrack)
+  }
+
+  def powerByStructure(power: Int): Unit = {
+    supply(Power).gain(power)
+    victoryPoints -= (power - 1)
+  }
+
 
   override def clone: Faction = ???
 

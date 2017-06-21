@@ -195,4 +195,23 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
     tiles = gameBoard.terraformableFor(faction)
     tiles.length shouldBe 1
   }
+
+  test("possible power gain for no adjacent faction") {
+    val faction = Faction(terrain = TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
+    val tile = gameBoard.placableDwellings(faction).head
+    gameBoard.placeDwelling(tile, faction)
+
+    val faction2 = Faction(terrain = TerrainType.Forest, availableBuildings = mutable.Map(Dwelling -> 10))
+    gameBoard.possiblePowerGainFor(faction2, tile) shouldBe 0
+  }
+
+  test("possible power gain for adjacent faction") {
+    val faction = Faction(terrain = TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
+    val tile = gameBoard.placableDwellings(faction).head
+    gameBoard.placeDwelling(tile, faction)
+
+    val faction2 = Faction(terrain = TerrainType.Forest, availableBuildings = mutable.Map(Dwelling -> 10))
+    gameBoard.placeDwelling(gameBoard.placableDwellings(faction2).head, faction2)
+    gameBoard.possiblePowerGainFor(faction2, tile) shouldBe 1
+  }
 }

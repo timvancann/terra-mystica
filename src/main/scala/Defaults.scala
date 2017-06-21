@@ -80,7 +80,6 @@ object Defaults {
     Air -> Cult(),
     Earth -> Cult()
   )
-
   val defaultBuildings = mutable.Map(
     Dwelling -> 8,
     TradingHouse -> 5,
@@ -94,7 +93,7 @@ object Defaults {
     Halflings -> Faction(
       terrain = Plains,
       cultCost = (Priest, 1),
-      terraformCost = (Worker, 3),
+      terraformCost = List((Worker, 3), (Worker, 2), (Worker, 1)),
       shipCost = List((Priest, 1), (Gold, 4)),
       buildingCost = Map(
         Dwelling -> List((Worker, 1), (Gold, 2)),

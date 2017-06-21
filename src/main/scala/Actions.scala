@@ -20,6 +20,30 @@ object Actions {
     }
   }
 
+  def buildDwelling(tile: Tile, faction:Faction): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      newState.gameBoard.buildDwelling(tile, faction)
+      newState
+    }
+  }
+
+  def shippingTrack(faction: Faction): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      faction.advanceShipTrack
+      newState
+    }
+  }
+
+  def spadeTrack(faction: Faction): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      faction.advanceSpadeTrack
+      newState
+    }
+  }
+
   def placePriestOnCult(faction: Faction, where: (CultType, OrderSpace)): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
@@ -32,6 +56,42 @@ object Actions {
     gameState => {
       val newState = gameState.clone
       newState.gameBoard.upgradeBuilding(tile, to)
+      newState
+    }
+  }
+
+  def upgradeBuilding(faction: Faction, tile: Tile, to: BuildingType, factionsToGainPower: List[Faction]): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      gameState.gameBoard.upgradeBuilding(tile, to)
+      factionsToGainPower.foreach(f => {
+        val power = gameState.gameBoard.possiblePowerGainFor(f, tile)
+        f.powerByStructure(power)
+      })
+      newState
+    }
+  }
+
+  def powerAction(faction: Faction): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      // TODO: implement
+      newState
+    }
+  }
+
+  def specialAction(faction: Faction): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      // todo: implement
+      newState
+    }
+  }
+
+  def pass(faction: Faction): GameState => GameState = {
+    gameState => {
+      val newState = gameState.clone
+      // todo implement
       newState
     }
   }
