@@ -14,7 +14,10 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
       availableBuildings = mutable.Map(
         Dwelling -> 8,
         TradingHouse -> 4
-      ))
+      ),
+    incomePerBuilding = Map(
+      Dwelling -> List((Worker, 2))
+    ))
   }
 
   test("gain a worker") {
@@ -66,4 +69,10 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
     faction.buildingsAvailableFor(Dwelling) shouldBe 8
     faction.buildingsAvailableFor(TradingHouse) shouldBe 3
   }
+
+//  test("calculate income for a single dwelling") {
+//    faction.buildDWelling
+//    val income = faction.calculateIncome
+//    income.head._2 shouldBe 2
+//  }
 }

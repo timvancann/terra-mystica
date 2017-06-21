@@ -78,7 +78,7 @@ case class Faction(terrain: TerrainType,
   }
 
   def buildBrige: Unit = {
-    supply(Bridge).spend(1)
+    supply(Bridge).sacrifice(1)
   }
 
   def buildDWelling: Unit = {
@@ -89,6 +89,15 @@ case class Faction(terrain: TerrainType,
     availableBuildings(from) += 1
     availableBuildings(to) -= 1
   }
+
+//  def calculateIncome: List[(ResourceType, Int)] = {
+//    incomePerBuilding.map(kv => kv._2
+//      .reverse
+//      .take(availableBuildings(kv._1)))
+//      .foldLeft((_, 0))((res, lst) => {
+//
+//      })
+//  }
 
   override def clone: Faction = ???
 
