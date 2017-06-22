@@ -8,7 +8,7 @@ Terra Mystica is an attempt to model the Terra Mystica board game to scala (with
 
 The generated moves are functions that map a `GameState` to a `GameState` and are, as such, lazy to reduce memory footprints.
 
-The implemented A.I. is a version of MCTS using the Paranoid approach.
+The implemented A.I. is a version of MCTS using the MCTS-max<sup>n</sup> approach.
 
 ---
 
