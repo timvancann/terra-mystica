@@ -90,10 +90,11 @@ object Actions {
     }
   }
 
-  def pass(faction: Faction): GameState => GameState = {
+  def pass(faction: Faction, bonusTile: BonusTile): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      // todo implement
+      gameState.gameBoard.calculatePassBonusFor(faction: Faction, bonusTile.passBonus)
+      faction.changeBonusTile(bonusTile)
       newState
     }
   }

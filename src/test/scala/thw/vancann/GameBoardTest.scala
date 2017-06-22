@@ -216,4 +216,49 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
     gameBoard.placeDwelling(gameBoard.placableDwellings(faction2).head, faction2)
     gameBoard.possiblePowerGainFor(faction2, tile) shouldBe 1
   }
+
+  test("calculate pass bonus for no bonus") {
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(
+        Dwelling -> 10,
+        TradingHouse -> 10),
+      buildingCost = Map(
+        Dwelling -> List((ResourceType.Worker, 1))))
+
+    val tile = gameBoard.placableDwellings(faction).head
+    gameBoard.placeDwelling(tile, faction)
+
+    gameBoard.calculatePassBonusFor(faction, List.empty) shouldBe 0
+  }
+
+  test("calculate pass bonus for single building") {
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(
+        Dwelling -> 10,
+        TradingHouse -> 10),
+      buildingCost = Map(
+        Dwelling -> List((ResourceType.Worker, 1))))
+
+    val tile = gameBoard.placableDwellings(faction).head
+    gameBoard.placeDwelling(tile, faction)
+
+    gameBoard.calculatePassBonusFor(faction, List((Dwelling, 3))) shouldBe 3
+  }
+
+  test("calculate pass bonus for multiple buildings") {
+    val faction = Faction(terrain = TerrainType.Mountains,
+      availableBuildings = mutable.Map(
+        Dwelling -> 10,
+        TradingHouse -> 10),
+      buildingCost = Map(
+        Dwelling -> List((ResourceType.Worker, 1))))
+
+    val tiles = gameBoard.placableDwellings(faction)
+    gameBoard.placeDwelling(tiles.head, faction)
+    gameBoard.placeDwelling(tiles(1), faction)
+    gameBoard.placeDwelling(tiles(2), faction)
+    gameBoard.upgradeBuilding(tiles.head, TradingHouse)
+
+    gameBoard.calculatePassBonusFor(faction, List((Dwelling, 3), (TradingHouse, 2))) shouldBe 8
+  }
 }

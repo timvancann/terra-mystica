@@ -126,6 +126,16 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
     faction.sacrifice(Bridge)
   }
 
+  def calculatePassBonusFor(faction: Faction, passBonus: List[(BuildingType, Int)]): Int = {
+    val buildingsCount = tilesOccupiedBy(faction)
+      .groupBy(_.building)
+      .mapValues(_.length)
+
+    passBonus
+      .filter(b => buildingsCount.contains(b._1))
+      .map(b => buildingsCount(b._1) * b._2)
+      .sum
+  }
 
   private def hasCorrectTerrainFor(faction: Faction, tile: Tile) = {
     tile.terrain == faction.terrain

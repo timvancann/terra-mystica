@@ -1,24 +1,23 @@
 package thw.vancann
 
-import thw.vancann.BonusTileType.BonusTileType
-import thw.vancann.BuildingType.{BuildingType, Dwelling}
-import thw.vancann.ResourceType.{Bridge, Gold, Power, Priest, ResourceType, Worker}
-import thw.vancann.TerrainType.TerrainType
+import thw.vancann.BuildingType._
+import thw.vancann.ResourceType._
+import thw.vancann.TerrainType._
 
 import scala.collection.mutable
 
-class FactionSupply(priests: Int = 5, bridge: Int = 3) {
+class FactionSupply(priests: Int, bridge: Int) {
   val supply = Map(
     Priest -> new GenericResource(priests),
     Bridge -> new GenericResource(bridge)
   )
 
-  def restock(resource: ResourceType): Unit = {
-    supply(resource).gain(1)
+  def restock(resource: ResourceType, n: Int): Unit = {
+    supply(resource).gain(n)
   }
 
-  def buy(resource: ResourceType): Unit = {
-    supply(resource).spend(1)
+  def buy(resource: ResourceType, n: Int): Unit = {
+    supply(resource).spend(n)
   }
 }
 
@@ -29,31 +28,27 @@ case class Faction(terrain: TerrainType,
                    buildingCost: Map[BuildingType, List[(ResourceType, Int)]] = Map.empty,
                    availableBuildings: mutable.Map[BuildingType, Int] = mutable.Map.empty,
                    incomePerBuilding: Map[BuildingType, List[List[(ResourceType, Int)]]] = Map.empty,
-                   private val victoryPointsPerShipTrack: List[Int] = List(2, 3, 4),
-                   private val victoryPointsPerSpadeTrack: List[Int] = List(6, 6),
+                   private val victoryPointsPerShipTrack: List[Int] = List(0, 2, 3, 4),
+                   private val victoryPointsPerSpadeTrack: List[Int] = List(0, 6, 6),
                    hasSpadeTrack: Boolean = true
                   ) {
-  private val factionSupply = new FactionSupply
+  private val factionSupply = new FactionSupply(5, 3)
 
-  var victoryPoints = 20
-  var shipTrack = 0
-  var spadeTrack = 0
   var bonusTile: BonusTile = BonusTile()
 
   private val supply = Map(
-    Gold -> new GenericResource,
-    Priest -> new PriestResource(factionSupply),
-    Worker -> new GenericResource,
-    Bridge -> new BridgeResource(factionSupply),
-    Power -> constructPowerResource
+    Gold -> new GenericResource(0),
+    Priest -> new PriestResource(factionSupply, 0),
+    Worker -> new GenericResource(0),
+    Bridge -> new BridgeResource(factionSupply, 0),
+    Power -> new PowerResource(5, 7),
+    Ship -> new GenericResource(0),
+    Spade -> new GenericResource(0),
+    VictoryPoints -> new GenericResource(20)
   )
 
   def addInititialResource(resources: List[(ResourceType, Int)]): Unit = {
     resources.foreach(r => supply(r._1).gain(r._2))
-  }
-
-  def constructPowerResource: PowerResource = {
-    new PowerResource(5, 7)
   }
 
   def spend(resource: ResourceType, n: Int = 1): Unit = {
@@ -82,7 +77,11 @@ case class Faction(terrain: TerrainType,
   }
 
   def numberOfTimesResourcesToSpendFor(cost: List[(ResourceType, Int)]): Int = {
-    cost.map(c => supply(c._1).amountToSpend / c._2).min
+    cost.map(c => resourcesToSpend(c._1) / c._2).min
+  }
+
+  def resourcesToSpend(resourceType: ResourceType): Int = {
+    supply(resourceType).amountToSpend
   }
 
   def buildingsAvailableFor(buildingType: BuildingType): Int = {
@@ -125,21 +124,26 @@ case class Faction(terrain: TerrainType,
   }
 
   def advanceShipTrack: Unit = {
-    shipTrack += 1
-    victoryPoints += victoryPointsPerShipTrack(shipTrack)
+    supply(Ship).gain(1)
+    supply(VictoryPoints).gain(victoryPointsPerShipTrack(supply(Ship).amountToSpend))
   }
 
   def advanceSpadeTrack: Unit = {
-    spadeTrack += 1
-    victoryPoints += victoryPointsPerSpadeTrack(spadeTrack)
+    supply(Spade).gain(1)
+    supply(VictoryPoints).gain(victoryPointsPerSpadeTrack(supply(Spade).amountToSpend))
   }
 
   def powerByStructure(power: Int): Unit = {
     supply(Power).gain(power)
-    victoryPoints -= (power - 1)
+    supply(VictoryPoints).spend(power - 1)
   }
 
-  def changeBonusTile(newBonusTile: BonusTileType) = {
+  def changeBonusTile(newBonusTile: BonusTile): Unit = {
+    bonusTile.passiveBonus.foreach(b => supply(b._1).spend(b._2))
+
+    bonusTile = newBonusTile
+
+    bonusTile.passiveBonus.foreach(b => supply(b._1).gain(b._2))
   }
 
   override def clone: Faction = ???

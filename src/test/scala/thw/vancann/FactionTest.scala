@@ -5,6 +5,7 @@ import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
 import thw.vancann.TerrainType._
 import thw.vancann.BuildingType._
 import thw.vancann.ResourceType._
+import thw.vancann.BonusTileType._
 
 import scala.collection.mutable
 
@@ -131,5 +132,48 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
     income.filter(_._1 == Worker).head._2 shouldBe 5
     income.filter(_._1 == Power).head._2 shouldBe 2
     income.filter(_._1 == Gold).head._2 shouldBe 3
+  }
+
+  test("test advancing on ship track") {
+    faction.resourcesToSpend(Ship) shouldBe 0
+    faction.resourcesToSpend(VictoryPoints) shouldBe 20
+    faction.advanceShipTrack
+    faction.resourcesToSpend(Ship) shouldBe 1
+    faction.resourcesToSpend(VictoryPoints) shouldBe 22
+  }
+
+  test("test advancing on spade track") {
+    faction.resourcesToSpend(Spade) shouldBe 0
+    faction.resourcesToSpend(VictoryPoints) shouldBe 20
+    faction.advanceSpadeTrack
+    faction.resourcesToSpend(Spade) shouldBe 1
+    faction.resourcesToSpend(VictoryPoints) shouldBe 26
+  }
+
+  test("test power by structure") {
+    faction.resourcesToSpend(VictoryPoints) shouldBe 20
+    faction.resourcesToSpend(Power) shouldBe 0
+    faction.powerByStructure(6)
+    faction.resourcesToSpend(VictoryPoints) shouldBe 15
+    faction.resourcesToSpend(Power) shouldBe 1
+  }
+
+  test("chaning bonus tile without bonus should compile") {
+    faction.changeBonusTile(BonusTile())
+  }
+
+  test("chaning bonus tile new bonus") {
+    faction.resourcesToSpend(Ship) shouldBe 0
+    faction.resourcesToSpend(VictoryPoints) shouldBe 20
+    faction.changeBonusTile(BonusTile(passiveBonus = List((Ship, 1))))
+    faction.resourcesToSpend(Ship) shouldBe 1
+    faction.resourcesToSpend(VictoryPoints) shouldBe 20
+  }
+
+  test("chaning bonus tile new bonus removal of old bonus") {
+    faction.changeBonusTile(BonusTile(passiveBonus = List((Ship, 1))))
+    faction.changeBonusTile(BonusTile(passiveBonus = List((Spade, 1))))
+    faction.resourcesToSpend(Ship) shouldBe 0
+    faction.resourcesToSpend(Spade) shouldBe 1
   }
 }

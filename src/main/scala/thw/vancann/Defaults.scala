@@ -2,9 +2,9 @@ package thw.vancann
 
 import thw.vancann.BonusTileType._
 import thw.vancann.BuildingType._
-import thw.vancann.CultType.{Air, Earth, Fire, Water}
-import thw.vancann.FactionType.Halflings
-import thw.vancann.ResourceType.{Gold, Power, Priest, Worker}
+import thw.vancann.CultType._
+import thw.vancann.FactionType._
+import thw.vancann.ResourceType._
 import thw.vancann.TerrainType._
 
 import scala.collection.mutable
@@ -121,7 +121,7 @@ object Defaults {
     ),
     Bon4 -> BonusTile(
       income = List((Power, 3)),
-      passiveBonus = faction => faction.shipTrack += 1
+      passiveBonus = List((Ship, 1))
     ),
     Bon5 -> BonusTile(
       income = List((Worker, 1), (Power, 3))

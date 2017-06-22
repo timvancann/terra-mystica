@@ -7,7 +7,7 @@ object BuildingType extends Enumeration {
 
 object ResourceType extends Enumeration {
   type ResourceType = Value
-  val Gold, Priest, Worker, Bridge, Power, Spade = Value
+  val Gold, Priest, Worker, Bridge, Power, Spade, Ship, VictoryPoints = Value
 }
 
 object CultType extends Enumeration {
