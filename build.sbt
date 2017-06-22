@@ -10,3 +10,6 @@ libraryDependencies += "org.scalamock"    %% "scalamock-scalatest-support"    % 
 
 coverageEnabled := true
 coverageHighlighting := true
+
+coverageExcludedPackages := "<empty>;thw.vancann.*Type*"
+

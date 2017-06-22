@@ -1,3 +1,5 @@
+package thw.vancann
+
 case class GameState(gameBoard: GameBoard, cultBoard: CultBoard, factions: List[Faction]) {
 
   override def clone: GameState = {

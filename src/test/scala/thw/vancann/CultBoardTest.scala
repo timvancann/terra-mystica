@@ -1,7 +1,8 @@
-import ResourceType.ResourceType
-import TerrainType.TerrainType
+package thw.vancann
+
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
+import thw.vancann.TerrainType.TerrainType
 
 
 class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeAndAfter {

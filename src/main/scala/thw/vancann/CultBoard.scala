@@ -1,4 +1,6 @@
-import CultType.CultType
+package thw.vancann
+
+import thw.vancann.CultType.CultType
 
 import scala.collection.mutable.ListBuffer
 

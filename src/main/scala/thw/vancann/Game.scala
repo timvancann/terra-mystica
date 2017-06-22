@@ -1,4 +1,6 @@
-import FactionType.Halflings
+package thw.vancann
+
+import thw.vancann.FactionType.Halflings
 
 object Game {
 

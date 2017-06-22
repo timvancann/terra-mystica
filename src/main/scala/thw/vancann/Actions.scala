@@ -1,6 +1,8 @@
-import BuildingType._
-import CultType._
-import TerrainType.TerrainType
+package thw.vancann
+
+import thw.vancann.BuildingType.BuildingType
+import thw.vancann.CultType.CultType
+import thw.vancann.TerrainType.TerrainType
 
 object Actions {
 

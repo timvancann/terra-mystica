@@ -1,9 +1,11 @@
-import BuildingType._
-import ResourceType._
-import TerrainType._
-import FactionType._
-import CultType._
-import BonusTileType._
+package thw.vancann
+
+import thw.vancann.BonusTileType._
+import thw.vancann.BuildingType._
+import thw.vancann.CultType.{Air, Earth, Fire, Water}
+import thw.vancann.FactionType.Halflings
+import thw.vancann.ResourceType.{Gold, Power, Priest, Worker}
+import thw.vancann.TerrainType._
 
 import scala.collection.mutable
 

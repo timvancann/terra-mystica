@@ -1,7 +1,9 @@
-import BonusTileType.BonusTileType
-import BuildingType._
-import ResourceType._
-import TerrainType._
+package thw.vancann
+
+import thw.vancann.BonusTileType.BonusTileType
+import thw.vancann.BuildingType.{BuildingType, Dwelling}
+import thw.vancann.ResourceType.{Bridge, Gold, Power, Priest, ResourceType, Worker}
+import thw.vancann.TerrainType.TerrainType
 
 import scala.collection.mutable
 

@@ -1,8 +1,10 @@
-import BuildingType._
-import TerrainType._
-import ResourceType._
+package thw.vancann
+
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
+import thw.vancann.TerrainType._
+import thw.vancann.BuildingType._
+import thw.vancann.ResourceType._
 
 import scala.collection.mutable
 

@@ -1,6 +1,8 @@
-import BuildingType._
+package thw.vancann
+
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
+import thw.vancann.BuildingType._
 
 import scala.collection.mutable
 

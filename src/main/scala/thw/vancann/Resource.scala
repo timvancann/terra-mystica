@@ -1,3 +1,5 @@
+package thw.vancann
+
 trait Resource {
   def spend(n: Int): Unit
 

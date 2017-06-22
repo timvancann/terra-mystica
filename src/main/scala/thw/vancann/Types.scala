@@ -1,3 +1,5 @@
+package thw.vancann
+
 object BuildingType extends Enumeration {
   type BuildingType = Value
   val Dwelling, TradingHouse, Temple, Sanctuary, Stronghold = Value
@@ -29,6 +31,8 @@ object BonusTileType extends Enumeration {
 }
 
 object ActionType extends Enumeration {
+  println(this.getClass.getName)
+  println(this.getClass.getName)
   type ActionType = Value
   val PlacePriest, AdvanceCult = Value
 }

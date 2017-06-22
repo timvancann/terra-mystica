@@ -1,6 +1,8 @@
-import BuildingType._
-import ResourceType.Bridge
-import TerrainType._
+package thw.vancann
+
+import thw.vancann.BuildingType.{BuildingType, Dwelling, _}
+import thw.vancann.ResourceType.Bridge
+import thw.vancann.TerrainType.{TerrainType, _}
 
 case class GameBoard(private val tiles: List[Tile], private val bridges: List[TileBridge]) {
 
@@ -41,11 +43,6 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
     val hexes = cubes.map(cubeToHex)
     val filtered = hexes.filter(h => rowOnBoard(h) & colOnBoard(h))
     filtered.map(h => tiles.find(_.hex == h).get)
-  }
-
-  def canBuildBridge(from: Hex, to: Hex): Boolean = {
-    bridges.find(b => (b.from == from & b.to == to) | (b.to == from & b.from == to))
-      .exists(_.buildBy == null)
   }
 
   def isOccupied(tile: Tile): Boolean = {

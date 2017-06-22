@@ -1,5 +1,6 @@
-import ActionType.ActionType
-import CultType.CultType
+package thw.vancann
+
+import thw.vancann.CultType.CultType
 
 object ActionGenerator {
 

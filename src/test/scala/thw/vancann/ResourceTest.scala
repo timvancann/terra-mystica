@@ -1,3 +1,5 @@
+package thw.vancann
+
 import org.scalatest.{FunSuite, Matchers}
 
 class ResourceTest extends FunSuite with Matchers {

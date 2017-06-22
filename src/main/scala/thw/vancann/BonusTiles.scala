@@ -1,8 +1,10 @@
-import BuildingType.BuildingType
-import CultType._
-import PropertyType.PropertyType
-import ResourceType._
-import TerrainType.TerrainType
+package thw.vancann
+
+import thw.vancann.BuildingType.BuildingType
+import thw.vancann.CultType.CultType
+import thw.vancann.PropertyType.PropertyType
+import thw.vancann.ResourceType.ResourceType
+import thw.vancann.TerrainType.TerrainType
 
 case class BonusTile(action: Map[PropertyType, Any] => GameState => GameState = _ => gameState => gameState,
                      income: List[(ResourceType, Int)] = List.empty,
