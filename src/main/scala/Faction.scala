@@ -36,7 +36,7 @@ case class Faction(terrain: TerrainType,
   var victoryPoints = 20
   var shipTrack = 0
   var spadeTrack = 0
-  var bonusTile: BonusTile = _
+  var bonusTile: BonusTile = BonusTile()
 
   private val supply = Map(
     Gold -> new GenericResource,
@@ -101,7 +101,14 @@ case class Faction(terrain: TerrainType,
   }
 
   def calculateIncome: List[(ResourceType, Int)] = {
-    incomePerBuilding.map(kv =>
+    def sumIncome(lst: List[(ResourceType, Int)]) = {
+      lst
+        .groupBy(_._1)
+        .map(kv => kv._1 -> kv._2.map(_._2).sum)
+        .toList
+    }
+
+    val buildingIncome = incomePerBuilding.map(kv =>
       kv._2
         .reverse
         .drop(availableBuildings(kv._1))
@@ -110,9 +117,9 @@ case class Faction(terrain: TerrainType,
         .map(kv => kv._1 -> kv._2.map(_._2).sum)
         .toList
     ).toList.flatten
-      .groupBy(_._1)
-      .map(kv => kv._1 -> kv._2.map(_._2).sum)
-      .toList
+
+    val bonusTileIncome = bonusTile.income
+    sumIncome(buildingIncome ++ bonusTileIncome)
   }
 
   def advanceShipTrack: Unit = {
