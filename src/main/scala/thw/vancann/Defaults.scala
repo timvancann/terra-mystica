@@ -140,9 +140,6 @@ object Defaults {
     Bon9 -> BonusTile(
       income = List((Gold, 2)),
       passBonus = List((Dwelling, 1))
-    ),
-    Bon10 -> BonusTile(
-      income = List((Power, 3))
     )
   )
 }

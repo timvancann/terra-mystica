@@ -27,12 +27,10 @@ object FactionType extends Enumeration {
 
 object BonusTileType extends Enumeration {
   type BonusTileType = Value
-  val Bon1, Bon2, Bon3, Bon4, Bon5, Bon6, Bon7, Bon8, Bon9, Bon10 = Value
+  val Bon1, Bon2, Bon3, Bon4, Bon5, Bon6, Bon7, Bon8, Bon9 = Value
 }
 
 object ActionType extends Enumeration {
-  println(this.getClass.getName)
-  println(this.getClass.getName)
   type ActionType = Value
   val PlacePriest, AdvanceCult = Value
 }
