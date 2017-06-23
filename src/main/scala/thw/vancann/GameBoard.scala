@@ -158,11 +158,11 @@ case class Tile(hex: Hex,
                 var terrain: TerrainType,
                 var faction: Faction = null,
                 var building: BuildingType = null) {
-  override def clone: Tile = Tile(hex, terrain, faction.clone, building)
+  override def clone: Tile = Tile(hex, terrain, if (faction != null) faction.clone else null, building)
 }
 
 case class TileBridge(from: Hex,
                       to: Hex,
                       var buildBy: Faction = null) {
-  override def clone: TileBridge = TileBridge(from, to, buildBy.clone)
+  override def clone: TileBridge = TileBridge(from, to, if (buildBy != null) buildBy.clone else null)
 }

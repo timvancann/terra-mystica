@@ -6,7 +6,7 @@ import thw.vancann.TerrainType.TerrainType
 
 object Actions {
 
-  def placeInitialDwellings(faction: Faction, where: Tile): GameState => GameState = {
+  def placeInitialDwelling(faction: Faction, where: Tile): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
       newState.gameBoard.placeDwelling(where, faction)
@@ -46,7 +46,7 @@ object Actions {
     }
   }
 
-  def placePriestOnCult(faction: Faction, where: (CultType, OrderSpace)): GameState => GameState = {
+  def placePriestOnCult(faction: Faction, where: (CultType, PriestSpace)): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
       newState.cultBoard.placePriest(faction, where)

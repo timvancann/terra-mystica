@@ -176,4 +176,28 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
     faction.resourcesToSpend(Ship) shouldBe 0
     faction.resourcesToSpend(Spade) shouldBe 1
   }
+
+  test("cloning unoccupied tile") {
+    val tile = Tile(Hex(4, 2), Desert, building = Dwelling)
+    val newTile = tile.clone
+    tile shouldBe newTile
+  }
+
+  test("cloning occupied tile") {
+    val tile = Tile(Hex(4, 2), Desert, faction, building = Dwelling)
+    val newTile = tile.clone
+    tile shouldBe newTile
+  }
+
+  test("cloning unbuild bridge") {
+    val bridge = TileBridge(Hex(4, 2), Hex(1, 2))
+    val newBridge = bridge.clone
+    bridge shouldBe newBridge
+  }
+
+  test("cloning build bridge") {
+    val bridge = TileBridge(Hex(4, 2), Hex(1, 2), faction)
+    val newBridge = bridge.clone
+    bridge shouldBe newBridge
+  }
 }

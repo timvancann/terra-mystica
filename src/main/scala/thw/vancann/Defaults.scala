@@ -7,7 +7,7 @@ import thw.vancann.FactionType._
 import thw.vancann.ResourceType._
 import thw.vancann.TerrainType._
 
-import scala.collection.mutable
+import scala.collection.{immutable, mutable}
 
 object Defaults {
 
@@ -75,11 +75,22 @@ object Defaults {
     Tile(Hex(3, 10), Wasteland),
     Tile(Hex(3, 11), Plains)
   )
+
+  val cultPriestSpaces = List(PriestSpace(3), PriestSpace(2), PriestSpace(2), PriestSpace(2), PriestSpace(1))
+  val cultProgressSpaces: Seq[ProgressSpace] = (0 to 10)
+    .map {
+      case i@3 => ProgressSpace(i, 1)
+      case i@5 => ProgressSpace(i, 2)
+      case i@7 => ProgressSpace(i, 2)
+      case i@10 => ProgressSpace(i, 3)
+      case i => ProgressSpace(i, 0)
+    }
+
   val cults = Map(
-    Water -> Cult(),
-    Fire -> Cult(),
-    Air -> Cult(),
-    Earth -> Cult()
+    Water -> Cult(cultPriestSpaces, cultProgressSpaces),
+    Fire -> Cult(cultPriestSpaces, cultProgressSpaces),
+    Air -> Cult(cultPriestSpaces, cultProgressSpaces),
+    Earth -> Cult(cultPriestSpaces, cultProgressSpaces)
   )
 
   val defaultBuildings = mutable.Map(

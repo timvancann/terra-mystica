@@ -16,7 +16,7 @@ object ActionGenerator {
     val cost = faction.cultCost
     val n = faction.numberOfTimesResourcesToSpendFor(List(cost))
     if (n > 0) {
-      val spaces: Seq[(CultType, OrderSpace)] = (for {
+      val spaces: Seq[(CultType, PriestSpace)] = (for {
         cult <- gameState.cultBoard.cults
         space <- cult._2.availableOrderSpaces
         if cult._2.currentProgress(faction) < 10
@@ -29,7 +29,7 @@ object ActionGenerator {
 
   def generatePlaceInitialDwellings(gameState: GameState, faction: Faction): Seq[(GameState) => GameState] = {
     val tiles = gameState.gameBoard.placableDwellings(faction)
-    tiles.map(t => Actions.placeInitialDwellings(faction, t))
+    tiles.map(t => Actions.placeInitialDwelling(faction, t))
   }
 
   //  def generateTerraform = (gameState: GameState, faction: Faction) => (_:Seq[(GameState) => GameState]) => {
