@@ -1,6 +1,7 @@
 package thw.vancann
 
 import thw.vancann.BuildingType.{BuildingType, Dwelling, _}
+import thw.vancann.FactionType.FactionType
 import thw.vancann.ResourceType.Bridge
 import thw.vancann.TerrainType.{TerrainType, _}
 
@@ -54,7 +55,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
   }
 
   def bridgesFor(faction: Faction): List[TileBridge] = {
-    bridges.filter(_.buildBy == faction)
+    bridges.filter(_.buildBy == faction.factionType)
   }
 
   def terraform(tile: Tile, to: TerrainType): Unit = {
@@ -84,7 +85,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
 
   def possiblePowerGainFor(faction: Faction, tile: Tile): Int = {
     neighbours(tile.hex)
-      .filter(_.faction == faction)
+      .filter(_.faction == faction.factionType)
       .map(t => {
         t.building match {
           case BuildingType.Stronghold | BuildingType.Sanctuary => 3
@@ -100,7 +101,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
   }
 
   def placeDwelling(tile: Tile, faction: Faction): Unit = {
-    tile.faction = faction
+    tile.faction = faction.factionType
     tile.building = Dwelling
     faction.buildDWelling
   }
@@ -111,7 +112,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
 
   def buildDwelling(tile: Tile, faction: Faction): Unit = {
     placeDwelling(tile, faction)
-    tile.faction = faction
+    tile.faction = faction.factionType
     faction.spend(faction.buildingCost(Dwelling))
   }
 
@@ -122,7 +123,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
   }
 
   def buildBridge(bridge: TileBridge, faction: Faction): Unit = {
-    bridge.buildBy = faction
+    bridge.buildBy = faction.factionType
     faction.sacrifice(Bridge)
   }
 
@@ -142,7 +143,7 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
   }
 
   private def isOwnedBy(faction: Faction, tile: Tile) = {
-    tile.faction == faction
+    tile.faction == faction.factionType
   }
 
   override def clone: GameBoard = GameBoard(tiles.map(_.clone), bridges.map(_.clone))
@@ -156,13 +157,13 @@ sealed case class Cube(x: Int, y: Int, z: Int) {
 
 case class Tile(hex: Hex,
                 var terrain: TerrainType,
-                var faction: Faction = null,
+                var faction: FactionType = null,
                 var building: BuildingType = null) {
-  override def clone: Tile = Tile(hex, terrain, if (faction != null) faction.clone else null, building)
+  override def clone: Tile = Tile(hex, terrain, faction, building)
 }
 
 case class TileBridge(from: Hex,
                       to: Hex,
-                      var buildBy: Faction = null) {
-  override def clone: TileBridge = TileBridge(from, to, if (buildBy != null) buildBy.clone else null)
+                      var buildBy: FactionType = null) {
+  override def clone: TileBridge = TileBridge(from, to, buildBy)
 }

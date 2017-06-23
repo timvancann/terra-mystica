@@ -1,30 +1,31 @@
 package thw.vancann
 
 import thw.vancann.CultType.CultType
+import thw.vancann.FactionType.FactionType
 
 import scala.collection.mutable.ListBuffer
 
-case class PriestSpace(bonus: Int, var faction: Faction = null) {
-  override def clone: PriestSpace = PriestSpace(bonus, faction.copy())
+case class PriestSpace(bonus: Int, var faction: FactionType = null) {
+  override def clone: PriestSpace = PriestSpace(bonus, faction)
 }
 
-case class ProgressSpace(n: Int, var powerBonus: Int, factions: ListBuffer[Faction] = ListBuffer.empty[Faction]) {
-  override def clone: ProgressSpace = ProgressSpace()
+case class ProgressSpace(n: Int, var powerBonus: Int, factions: ListBuffer[FactionType] = ListBuffer.empty[FactionType]) {
+  override def clone: ProgressSpace = ???
 }
 
-case class Cult(private val spaces: List[PriestSpace] = List.empty, private val progress: List[ProgressSpace] = List.empty) {
+case class Cult(private val spaces: Seq[PriestSpace] = List.empty, private val progress: Seq[ProgressSpace] = List.empty) {
 
-  def availableOrderSpaces: List[PriestSpace] = spaces.filter(_.faction == null)
+  def availableOrderSpaces: Seq[PriestSpace] = spaces.filter(_.faction == null)
 
   def addFaction(faction: Faction, n: Int = 0): Unit = {
-    progress(n).factions += faction
+    progress(n).factions += faction.factionType
   }
 
   def placePriest(faction: Faction, space: PriestSpace): Unit = {
     if (space.bonus == 1) {
       faction.spend(ResourceType.Priest)
     } else {
-      space.faction = faction
+      space.faction = faction.factionType
       faction.sacrifice(ResourceType.Priest)
     }
     advance(faction, space.bonus)
@@ -33,9 +34,9 @@ case class Cult(private val spaces: List[PriestSpace] = List.empty, private val 
   def advance(faction: Faction, n: Int): Unit = {
     // TODO: add checking for town
     val current = currentProgress(faction)
-    progress(current).factions -= faction
+    progress(current).factions -= faction.factionType
     val next = Math.min(10, current + n)
-    progress(next).factions += faction
+    progress(next).factions += faction.factionType
 
     faction.gain(ResourceType.Power, calculatPowerGain(current, next))
   }
@@ -47,7 +48,7 @@ case class Cult(private val spaces: List[PriestSpace] = List.empty, private val 
       .sum
   }
 
-  def currentProgress(faction: Faction): Int = progress.find(s => s.factions.contains(faction)).get.n
+  def currentProgress(faction: Faction): Int = progress.find(s => s.factions.contains(faction.factionType)).get.n
 
   override def clone: Cult = Cult(spaces.map(_.clone), progress.map(_.clone))
 }

@@ -33,12 +33,12 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("no bridges build for faction") {
-    val faction = Faction(terrain = TerrainType.Desert)
+    val faction = Faction(FactionType.Halflings, TerrainType.Desert)
     gameBoard.bridgesFor(faction).length shouldBe 0
   }
 
   test("no buildable bridges, no faction on board") {
-    val faction = Faction(terrain = TerrainType.Desert)
+    val faction = Faction(FactionType.Halflings, TerrainType.Desert)
     gameBoard.buildableBridges(faction).length shouldBe 0
   }
 
@@ -88,30 +88,30 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("no free placable dwellings") {
-    val faction = Faction(terrain = TerrainType.Desert)
+    val faction = Faction(FactionType.Halflings, TerrainType.Desert)
     gameBoard.placableDwellings(faction).length shouldBe 0
   }
 
   test("1 free placable dwellings") {
-    val faction = Faction(terrain = TerrainType.Forest)
+    val faction = Faction(FactionType.Halflings, TerrainType.Forest)
     val placable = gameBoard.placableDwellings(faction)
     placable.length shouldBe 1
     placable.head.terrain shouldBe TerrainType.Forest
   }
 
   test("three free placable dwellings") {
-    val faction = Faction(terrain = TerrainType.Mountains)
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains)
     val placable = gameBoard.placableDwellings(faction)
     placable.length shouldBe 3
   }
 
   test("build dwelling on board, no buildable tiles") {
-    val faction = Faction(terrain = TerrainType.Desert)
+    val faction = Faction(FactionType.Halflings, TerrainType.Desert)
     gameBoard.buildableDwellings(faction).length shouldBe 0
   }
 
   test("build dwelling on board, one buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
       buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
@@ -120,7 +120,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("build dwelling on board, check resources spend") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
       buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     faction.gain(ResourceType.Worker, 3)
@@ -130,7 +130,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("build dwelling on board, two buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
       buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
@@ -139,7 +139,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("build dwelling on board, no free buildable neighbour") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
       buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
@@ -150,12 +150,12 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("no buildable bridges, no bridge at tile") {
-    val faction = Faction(terrain = TerrainType.Desert)
+    val faction = Faction(FactionType.Halflings, TerrainType.Desert)
     gameBoard.buildableBridges(faction).length shouldBe 0
   }
 
   test("one bridge build for faction") {
-    val faction = Faction(terrain = TerrainType.Plains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Plains,
       availableBuildings = mutable.Map(Dwelling -> 10),
       buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     gameBoard.buildDwelling(gameBoard.placableDwellings(faction).head, faction)
@@ -164,7 +164,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("upgradable buildings for dwelling") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
       buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
@@ -173,7 +173,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("upgrade building from dwelling to stronghold") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10, TradingHouse -> 10),
       buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
     val tiles = gameBoard.placableDwellings(faction)
@@ -183,14 +183,14 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("terraformable for faction should only return terrain different from home terrain") {
-    val faction = Faction(terrain = TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
     gameBoard.placeDwelling(gameBoard.placableDwellings(faction).head, faction)
     val tiles = gameBoard.terraformableFor(faction)
     tiles.length shouldBe 2
   }
 
   test("terraformed tile should not show up in terraformable list") {
-    val faction = Faction(terrain = TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
     gameBoard.placeDwelling(gameBoard.placableDwellings(faction).head, faction)
     var tiles = gameBoard.terraformableFor(faction)
     gameBoard.terraform(tiles.head, faction.terrain)
@@ -199,26 +199,26 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("possible power gain for no adjacent faction") {
-    val faction = Faction(terrain = TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
     val tile = gameBoard.placableDwellings(faction).head
     gameBoard.placeDwelling(tile, faction)
 
-    val faction2 = Faction(terrain = TerrainType.Forest, availableBuildings = mutable.Map(Dwelling -> 10))
+    val faction2 = Faction(FactionType.Halflings, TerrainType.Forest, availableBuildings = mutable.Map(Dwelling -> 10))
     gameBoard.possiblePowerGainFor(faction2, tile) shouldBe 0
   }
 
   test("possible power gain for adjacent faction") {
-    val faction = Faction(terrain = TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains, availableBuildings = mutable.Map(Dwelling -> 10))
     val tile = gameBoard.placableDwellings(faction).head
     gameBoard.placeDwelling(tile, faction)
 
-    val faction2 = Faction(terrain = TerrainType.Forest, availableBuildings = mutable.Map(Dwelling -> 10))
+    val faction2 = Faction(FactionType.Halflings, TerrainType.Forest, availableBuildings = mutable.Map(Dwelling -> 10))
     gameBoard.placeDwelling(gameBoard.placableDwellings(faction2).head, faction2)
     gameBoard.possiblePowerGainFor(faction2, tile) shouldBe 1
   }
 
   test("calculate pass bonus for no bonus") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(
         Dwelling -> 10,
         TradingHouse -> 10),
@@ -232,7 +232,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("calculate pass bonus for single building") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(
         Dwelling -> 10,
         TradingHouse -> 10),
@@ -246,7 +246,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("calculate pass bonus for multiple buildings") {
-    val faction = Faction(terrain = TerrainType.Mountains,
+    val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(
         Dwelling -> 10,
         TradingHouse -> 10),

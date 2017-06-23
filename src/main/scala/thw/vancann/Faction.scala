@@ -1,6 +1,7 @@
 package thw.vancann
 
 import thw.vancann.BuildingType._
+import thw.vancann.FactionType.FactionType
 import thw.vancann.ResourceType._
 import thw.vancann.TerrainType._
 
@@ -21,7 +22,8 @@ class FactionSupply(priests: Int, bridge: Int) {
   }
 }
 
-case class Faction(terrain: TerrainType,
+case class Faction(factionType: FactionType,
+                   terrain: TerrainType,
                    cultCost: (ResourceType, Int) = (Priest, 1),
                    terraformCost: List[(ResourceType, Int)] = List((Worker, 3), (Worker, 2), (Worker, 1)),
                    shipCost: List[(ResourceType, Int)] = List((Priest, 1), (Gold, 4)),

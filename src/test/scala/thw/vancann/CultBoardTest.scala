@@ -11,8 +11,8 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
   var faction: Faction = _
 
   before {
-    cult = new Cult
-    faction = Faction(mock[TerrainType])
+    cult = Cult(Defaults.cultPriestSpaces, Defaults.cultProgressSpaces)
+    faction = Faction(FactionType.Halflings, mock[TerrainType])
 
     cult.addFaction(faction)
   }
@@ -54,7 +54,7 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
   }
 
   test("Test adding priest on 1-bonus space") {
-    val space = cult.availableOrderSpaces.find(_.bonus == 1).get
+    val space = cult.availableOrderSpaces.reverse.head
 
     cult.placePriest(faction, space)
 

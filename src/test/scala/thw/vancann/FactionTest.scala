@@ -6,6 +6,7 @@ import thw.vancann.TerrainType._
 import thw.vancann.BuildingType._
 import thw.vancann.ResourceType._
 import thw.vancann.BonusTileType._
+import thw.vancann.FactionType.FactionType
 
 import scala.collection.mutable
 
@@ -13,7 +14,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
 
   var faction: Faction = _
   before {
-    faction = Faction(mock[TerrainType],
+    faction = Faction(FactionType.Halflings, mock[TerrainType],
       availableBuildings = mutable.Map(
         Dwelling -> 8,
         TradingHouse -> 4
@@ -71,7 +72,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
   }
 
   test("calculate income for a single building, single resource") {
-    val faction = Faction(mock[TerrainType],
+    val faction = Faction(FactionType.Halflings, mock[TerrainType],
       availableBuildings = mutable.Map(
         Dwelling -> 1
       ),
@@ -84,7 +85,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
   }
 
   test("calculate income for a single building, multiple resources") {
-    val faction = Faction(mock[TerrainType],
+    val faction = Faction(FactionType.Halflings, mock[TerrainType],
       availableBuildings = mutable.Map(
         Dwelling -> 1
       ),
@@ -98,7 +99,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
   }
 
   test("calculate income for a multiple buildings, single resource") {
-    val faction = Faction(mock[TerrainType],
+    val faction = Faction(FactionType.Halflings, mock[TerrainType],
       availableBuildings = mutable.Map(
         Dwelling -> 2,
         TradingHouse -> 1
@@ -115,7 +116,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
   }
 
   test("calculate income for a multiple buildings, multiple resources") {
-    val faction = Faction(mock[TerrainType],
+    val faction = Faction(FactionType.Halflings, mock[TerrainType],
       availableBuildings = mutable.Map(
         Dwelling -> 2,
         TradingHouse -> 1
@@ -184,7 +185,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
   }
 
   test("cloning occupied tile") {
-    val tile = Tile(Hex(4, 2), Desert, faction, building = Dwelling)
+    val tile = Tile(Hex(4, 2), Desert, faction.factionType, Dwelling)
     val newTile = tile.clone
     tile shouldBe newTile
   }
@@ -196,7 +197,7 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
   }
 
   test("cloning build bridge") {
-    val bridge = TileBridge(Hex(4, 2), Hex(1, 2), faction)
+    val bridge = TileBridge(Hex(4, 2), Hex(1, 2), faction.factionType)
     val newBridge = bridge.clone
     bridge shouldBe newBridge
   }

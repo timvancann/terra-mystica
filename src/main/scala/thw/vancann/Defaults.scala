@@ -11,7 +11,7 @@ import scala.collection.{immutable, mutable}
 
 object Defaults {
 
-  val bridges = List(
+  def bridges = List(
     TileBridge(Hex(0, 0), Hex(2, 2)),
     TileBridge(Hex(0, 6), Hex(2, 6)),
     TileBridge(Hex(0, 10), Hex(2, 10)),
@@ -20,7 +20,7 @@ object Defaults {
     TileBridge(Hex(1, 3), Hex(2, 2)),
     TileBridge(Hex(1, 4), Hex(2, 6))
   )
-  val tiles = List(
+  def tiles = List(
     Tile(Hex(0, 0), Plains),
     Tile(Hex(0, 1), Mountains),
     Tile(Hex(0, 2), Forest),
@@ -76,8 +76,8 @@ object Defaults {
     Tile(Hex(3, 11), Plains)
   )
 
-  val cultPriestSpaces = List(PriestSpace(3), PriestSpace(2), PriestSpace(2), PriestSpace(2), PriestSpace(1))
-  val cultProgressSpaces: Seq[ProgressSpace] = (0 to 10)
+  def cultPriestSpaces = List(PriestSpace(3), PriestSpace(2), PriestSpace(2), PriestSpace(2), PriestSpace(1))
+  def cultProgressSpaces: Seq[ProgressSpace] = (0 to 10)
     .map {
       case i@3 => ProgressSpace(i, 1)
       case i@5 => ProgressSpace(i, 2)
@@ -86,22 +86,23 @@ object Defaults {
       case i => ProgressSpace(i, 0)
     }
 
-  val cults = Map(
+  def cults = Map(
     Water -> Cult(cultPriestSpaces, cultProgressSpaces),
     Fire -> Cult(cultPriestSpaces, cultProgressSpaces),
     Air -> Cult(cultPriestSpaces, cultProgressSpaces),
     Earth -> Cult(cultPriestSpaces, cultProgressSpaces)
   )
 
-  val defaultBuildings = mutable.Map(
+  def defaultBuildings = mutable.Map(
     Dwelling -> 8,
     TradingHouse -> 5,
     Temple -> 3,
     Sanctuary -> 1,
     Stronghold -> 1
   )
-  val factions = Map(
+  def factions = Map(
     Halflings -> Faction(
+      factionType = Halflings,
       terrain = Plains,
       cultCost = (Priest, 1),
       terraformCost = List((Worker, 3), (Worker, 2), (Worker, 1)),
@@ -118,7 +119,7 @@ object Defaults {
     )
   )
 
-  val bonusTiles = Map(
+  def bonusTiles = Map(
     Bon1 -> BonusTile(
       BonusTileActions.gainSpade,
       List((Gold, 2))
