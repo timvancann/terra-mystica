@@ -27,30 +27,27 @@ class ResourceTest extends FunSuite with Matchers {
   }
 
   test("spending priest resource") {
-    val supply = new FactionSupply(5, 3)
-    val victim = new PriestResource(supply, 2)
+    val victim = new PriestResource(2, 5)
 
     victim.spend(1)
     victim.amount shouldBe 1
-    supply.supply(ResourceType.Priest).amount shouldBe 6
+    victim.factionSupply shouldBe 6
   }
 
   test("Gaining priest resource") {
-    val supply = new FactionSupply(5, 3)
-    val victim = new PriestResource(supply, 2)
+    val victim = new PriestResource(2, 5)
 
     victim.gain(1)
     victim.amount shouldBe 3
-    supply.supply(ResourceType.Priest).amount shouldBe 4
+    victim.factionSupply shouldBe 4
   }
 
   test("Sacrificing priest resource") {
-    val supply = new FactionSupply(5, 3)
-    val victim = new PriestResource(supply, 2)
+    val victim = new PriestResource(2, 5)
 
     victim.sacrifice(1)
     victim.amount shouldBe 1
-    supply.supply(ResourceType.Priest).amount shouldBe 5
+    victim.factionSupply shouldBe 5
   }
 
   test("spending power resource") {

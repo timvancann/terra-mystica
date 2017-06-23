@@ -100,6 +100,19 @@ object Defaults {
     Sanctuary -> 1,
     Stronghold -> 1
   )
+
+  def supply = {
+    Map(
+      Gold -> GenericResource(0),
+      Priest -> new PriestResource(0, 5),
+      Worker -> GenericResource(0),
+      Bridge -> new BridgeResource(0, 3),
+      Power -> new PowerResource(5, 7),
+      Ship -> GenericResource(0),
+      Spade -> GenericResource(0),
+      VictoryPoints -> GenericResource(20)
+    )
+  }
   def factions = Map(
     Halflings -> Faction(
       factionType = Halflings,

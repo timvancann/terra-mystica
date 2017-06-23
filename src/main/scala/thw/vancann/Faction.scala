@@ -7,21 +7,6 @@ import thw.vancann.TerrainType._
 
 import scala.collection.mutable
 
-class FactionSupply(priests: Int, bridge: Int) {
-  val supply = Map(
-    Priest -> new GenericResource(priests),
-    Bridge -> new GenericResource(bridge)
-  )
-
-  def restock(resource: ResourceType, n: Int): Unit = {
-    supply(resource).gain(n)
-  }
-
-  def buy(resource: ResourceType, n: Int): Unit = {
-    supply(resource).spend(n)
-  }
-}
-
 case class Faction(factionType: FactionType,
                    terrain: TerrainType,
                    cultCost: (ResourceType, Int) = (Priest, 1),
@@ -32,22 +17,11 @@ case class Faction(factionType: FactionType,
                    incomePerBuilding: Map[BuildingType, List[List[(ResourceType, Int)]]] = Map.empty,
                    private val victoryPointsPerShipTrack: List[Int] = List(0, 2, 3, 4),
                    private val victoryPointsPerSpadeTrack: List[Int] = List(0, 6, 6),
-                   hasSpadeTrack: Boolean = true
+                   hasSpadeTrack: Boolean = true,
+                   private val supply: Map[ResourceType, Resource] = Map.empty,
+                   private var bonusTile: BonusTile = BonusTile()
                   ) {
-  private val factionSupply = new FactionSupply(5, 3)
 
-  var bonusTile: BonusTile = BonusTile()
-
-  private val supply = Map(
-    Gold -> new GenericResource(0),
-    Priest -> new PriestResource(factionSupply, 0),
-    Worker -> new GenericResource(0),
-    Bridge -> new BridgeResource(factionSupply, 0),
-    Power -> new PowerResource(5, 7),
-    Ship -> new GenericResource(0),
-    Spade -> new GenericResource(0),
-    VictoryPoints -> new GenericResource(20)
-  )
 
   def addInititialResource(resources: List[(ResourceType, Int)]): Unit = {
     resources.foreach(r => supply(r._1).gain(r._2))
@@ -148,7 +122,21 @@ case class Faction(factionType: FactionType,
     bonusTile.passiveBonus.foreach(b => supply(b._1).gain(b._2))
   }
 
-  override def clone: Faction = ???
+  override def clone: Faction = Faction(
+    factionType,
+    terrain,
+    cultCost,
+    terraformCost,
+    shipCost,
+    buildingCost,
+    availableBuildings.clone(),
+    incomePerBuilding,
+    victoryPointsPerShipTrack,
+    victoryPointsPerSpadeTrack,
+    hasSpadeTrack,
+    supply.map(kv => kv._1 -> kv._2.clone),
+    bonusTile
+  )
 
 }
 

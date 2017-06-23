@@ -8,9 +8,11 @@ trait Resource {
   def sacrifice(n: Int): Unit
 
   def amountToSpend: Int
+
+  override def clone: Resource
 }
 
-class GenericResource(var amount: Int = 0) extends Resource {
+case class GenericResource(var amount: Int = 0) extends Resource {
   override def spend(n: Int): Unit = amount -= n
 
   override def gain(n: Int): Unit = amount += n
@@ -18,23 +20,27 @@ class GenericResource(var amount: Int = 0) extends Resource {
   override def sacrifice(n: Int): Unit = amount -= n
 
   def amountToSpend: Int = amount
+
+  override def clone: GenericResource = GenericResource(amount)
 }
 
-class PriestResource(factionSupply: FactionSupply, amount: Int = 0) extends GenericResource(amount) {
+class PriestResource(amount: Int = 0, var factionSupply: Int = 5) extends GenericResource(amount) {
   override def gain(n: Int): Unit = {
     super.gain(n)
-    factionSupply.buy(ResourceType.Priest, n)
+    factionSupply -= n
   }
 
   override def spend(n: Int = 1): Unit = {
     super.spend(n)
-    factionSupply.restock(ResourceType.Priest, n)
+    factionSupply += n
   }
+  override def clone: PriestResource = new PriestResource(amount, factionSupply)
 }
 
-class BridgeResource(factionSupply: FactionSupply, amount: Int = 0) extends GenericResource(amount) {
-  override def sacrifice(n: Int): Unit = factionSupply.buy(ResourceType.Bridge, n)
-  override def amountToSpend: Int = factionSupply.supply(ResourceType.Bridge).amount
+class BridgeResource(amount: Int = 0, var factionSupply: Int = 3) extends GenericResource(amount) {
+  override def sacrifice(n: Int): Unit = factionSupply -= 1
+  override def amountToSpend: Int = factionSupply
+  override def clone: BridgeResource = new BridgeResource(amount, factionSupply)
 }
 
 class PowerResource(var stage1: Int = 5, var stage2: Int = 7: Int, var stage3: Int = 0) extends Resource {
@@ -61,4 +67,6 @@ class PowerResource(var stage1: Int = 5, var stage2: Int = 7: Int, var stage3: I
   }
 
   def amountToSpend: Int = stage3
+
+  override def clone: PowerResource = new PowerResource(stage1, stage2, stage3)
 }

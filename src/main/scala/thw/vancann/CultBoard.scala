@@ -10,7 +10,7 @@ case class PriestSpace(bonus: Int, var faction: FactionType = null) {
 }
 
 case class ProgressSpace(n: Int, var powerBonus: Int, factions: ListBuffer[FactionType] = ListBuffer.empty[FactionType]) {
-  override def clone: ProgressSpace = ???
+  override def clone: ProgressSpace = ProgressSpace(n, powerBonus, factions.clone())
 }
 
 case class Cult(private val spaces: Seq[PriestSpace] = List.empty, private val progress: Seq[ProgressSpace] = List.empty) {
