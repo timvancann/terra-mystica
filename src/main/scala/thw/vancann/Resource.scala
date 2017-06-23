@@ -8,8 +8,6 @@ trait Resource {
   def sacrifice(n: Int): Unit
 
   def amountToSpend: Int
-
-  override def clone: Resource
 }
 
 case class GenericResource(var amount: Int = 0) extends Resource {
