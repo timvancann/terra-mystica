@@ -5,8 +5,6 @@ import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
 import thw.vancann.TerrainType._
 import thw.vancann.BuildingType._
 import thw.vancann.ResourceType._
-import thw.vancann.BonusTileType._
-import thw.vancann.FactionType.FactionType
 
 import scala.collection.mutable
 
@@ -176,29 +174,5 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
     faction.changeBonusTile(BonusTile(passiveBonus = List((Spade, 1))))
     faction.resourcesToSpend(Ship) shouldBe 0
     faction.resourcesToSpend(Spade) shouldBe 1
-  }
-
-  test("cloning unoccupied tile") {
-    val tile = Tile(Hex(4, 2), Desert, building = Dwelling)
-    val newTile = tile.clone
-    tile shouldBe newTile
-  }
-
-  test("cloning occupied tile") {
-    val tile = Tile(Hex(4, 2), Desert, faction.factionType, Dwelling)
-    val newTile = tile.clone
-    tile shouldBe newTile
-  }
-
-  test("cloning unbuild bridge") {
-    val bridge = TileBridge(Hex(4, 2), Hex(1, 2))
-    val newBridge = bridge.clone
-    bridge shouldBe newBridge
-  }
-
-  test("cloning build bridge") {
-    val bridge = TileBridge(Hex(4, 2), Hex(1, 2), faction.factionType)
-    val newBridge = bridge.clone
-    bridge shouldBe newBridge
   }
 }

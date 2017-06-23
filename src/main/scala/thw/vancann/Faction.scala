@@ -123,19 +123,9 @@ case class Faction(factionType: FactionType,
   }
 
   override def clone: Faction = Faction(
-    factionType,
-    terrain,
-    cultCost,
-    terraformCost,
-    shipCost,
-    buildingCost,
-    availableBuildings.clone(),
-    incomePerBuilding,
-    victoryPointsPerShipTrack,
-    victoryPointsPerSpadeTrack,
-    hasSpadeTrack,
-    supply.map(kv => kv._1 -> kv._2.clone),
-    bonusTile
+    factionType, terrain, cultCost, terraformCost, shipCost, buildingCost, availableBuildings.clone(),
+    incomePerBuilding, victoryPointsPerShipTrack, victoryPointsPerSpadeTrack, hasSpadeTrack,
+    supply.map(kv => kv._1 -> kv._2.clone), bonusTile
   )
 
 }

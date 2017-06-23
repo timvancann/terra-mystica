@@ -3,6 +3,8 @@ package thw.vancann
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
 import thw.vancann.BuildingType._
+import thw.vancann.TerrainType._
+import thw.vancann.FactionType._
 
 import scala.collection.mutable
 
@@ -260,5 +262,29 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
     gameBoard.upgradeBuilding(tiles.head, TradingHouse)
 
     gameBoard.calculatePassBonusFor(faction, List((Dwelling, 3), (TradingHouse, 2))) shouldBe 8
+  }
+
+  test("cloning unoccupied tile") {
+    val tile = Tile(Hex(4, 2), Desert, building = Dwelling)
+    val newTile = tile.clone
+    tile shouldBe newTile
+  }
+
+  test("cloning occupied tile") {
+    val tile = Tile(Hex(4, 2), Desert, Halflings, Dwelling)
+    val newTile = tile.clone
+    tile shouldBe newTile
+  }
+
+  test("cloning unbuild bridge") {
+    val bridge = TileBridge(Hex(4, 2), Hex(1, 2))
+    val newBridge = bridge.clone
+    bridge shouldBe newBridge
+  }
+
+  test("cloning build bridge") {
+    val bridge = TileBridge(Hex(4, 2), Hex(1, 2), Halflings)
+    val newBridge = bridge.clone
+    bridge shouldBe newBridge
   }
 }

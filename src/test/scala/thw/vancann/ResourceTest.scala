@@ -94,4 +94,32 @@ class ResourceTest extends FunSuite with Matchers {
     victim.stage2 shouldBe 5
     victim.stage3 shouldBe 5
   }
+
+  test("cloning generic resource") {
+    val victim = GenericResource(5)
+    val cloned = victim.clone
+    victim shouldBe cloned
+  }
+
+  test("cloning priest resource") {
+    val victim = new PriestResource(5, 10)
+    val cloned = victim.clone
+    victim.amount shouldBe cloned.amount
+    victim.factionSupply shouldBe cloned.factionSupply
+  }
+
+  test("cloning bridge resource") {
+    val victim = new BridgeResource(5, 4)
+    val cloned = victim.clone
+    victim.amount shouldBe cloned.amount
+    victim.factionSupply shouldBe cloned.factionSupply
+  }
+
+  test("cloning power resource") {
+    val victim = new PowerResource(7, 6, 5)
+    val cloned = victim.clone
+    victim.stage1 shouldBe cloned.stage1
+    victim.stage2 shouldBe cloned.stage2
+    victim.stage3 shouldBe cloned.stage3
+  }
 }
