@@ -12,7 +12,7 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
 
   before {
     cult = Cult(Defaults.cultPriestSpaces, Defaults.cultProgressSpaces)
-    faction = Faction(FactionType.Halflings, mock[TerrainType])
+    faction = Faction(FactionType.Halflings, mock[TerrainType], supply = Defaults.supply)
 
     cult.addFaction(faction)
   }

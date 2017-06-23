@@ -16,7 +16,9 @@ class FactionTest extends FunSuite with Matchers with BeforeAndAfter with MockFa
       availableBuildings = mutable.Map(
         Dwelling -> 8,
         TradingHouse -> 4
-      ))
+      ),
+      supply = Defaults.supply
+    )
   }
 
   test("gain a worker") {

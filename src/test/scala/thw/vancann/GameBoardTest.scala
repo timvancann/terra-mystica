@@ -35,12 +35,12 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   }
 
   test("no bridges build for faction") {
-    val faction = Faction(FactionType.Halflings, TerrainType.Desert)
+    val faction = Faction(FactionType.Halflings, TerrainType.Desert, supply = Defaults.supply)
     gameBoard.bridgesFor(faction).length shouldBe 0
   }
 
   test("no buildable bridges, no faction on board") {
-    val faction = Faction(FactionType.Halflings, TerrainType.Desert)
+    val faction = Faction(FactionType.Halflings, TerrainType.Desert, supply = Defaults.supply)
     gameBoard.buildableBridges(faction).length shouldBe 0
   }
 
@@ -115,7 +115,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   test("build dwelling on board, one buildable neighbour") {
     val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
-      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))), supply = Defaults.supply)
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.buildableDwellings(faction).length shouldBe 1
@@ -124,7 +124,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   test("build dwelling on board, check resources spend") {
     val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
-      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))), supply = Defaults.supply)
     faction.gain(ResourceType.Worker, 3)
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
@@ -134,7 +134,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   test("build dwelling on board, two buildable neighbour") {
     val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
-      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))), supply = Defaults.supply)
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles(1), faction)
     gameBoard.buildableDwellings(faction).length shouldBe 2
@@ -143,7 +143,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   test("build dwelling on board, no free buildable neighbour") {
     val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
-      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))), supply = Defaults.supply)
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.buildDwelling(tiles(1), faction)
@@ -159,7 +159,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   test("one bridge build for faction") {
     val faction = Faction(FactionType.Halflings, TerrainType.Plains,
       availableBuildings = mutable.Map(Dwelling -> 10),
-      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))), supply = Defaults.supply)
     gameBoard.buildDwelling(gameBoard.placableDwellings(faction).head, faction)
     gameBoard.buildBridge(gameBoard.buildableBridges(faction).head, faction)
     gameBoard.bridgesFor(faction).length shouldBe 1
@@ -168,7 +168,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   test("upgradable buildings for dwelling") {
     val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10),
-      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))), supply = Defaults.supply)
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.upgradableBuildings(faction).length shouldBe 1
@@ -177,7 +177,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
   test("upgrade building from dwelling to stronghold") {
     val faction = Faction(FactionType.Halflings, TerrainType.Mountains,
       availableBuildings = mutable.Map(Dwelling -> 10, TradingHouse -> 10),
-      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))))
+      buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))), supply = Defaults.supply)
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head, faction)
     gameBoard.upgradeBuilding(tiles.head, BuildingType.TradingHouse)
