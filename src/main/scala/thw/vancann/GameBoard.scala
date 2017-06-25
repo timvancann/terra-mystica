@@ -58,8 +58,9 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
     bridges.filter(_.buildBy == faction.factionType)
   }
 
-  def terraform(tile: Tile, to: TerrainType): Unit = {
-    tile.terrain = to
+  def terraform(hex: Hex, to: TerrainType): Unit = {
+    val t = findTileByHex(hex)
+    t.terrain = to
   }
 
   private def unoccupiedNeighboursFor(faction: Faction) = {
@@ -100,19 +101,25 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
       .filter(t => !isOccupied(t))
   }
 
-  def placeDwelling(tile: Tile, faction: Faction): Unit = {
-    tile.faction = faction.factionType
-    tile.building = Dwelling
+  def placeDwelling(hex: Hex, faction: Faction): Unit = {
+    val t = findTileByHex(hex)
+    t.faction = faction.factionType
+    t.building = Dwelling
     faction.buildDWelling
+  }
+
+  def findTileByHex(hex: Hex): Tile = {
+    tiles.find(_.hex == hex).get
   }
 
   def buildableDwellings(faction: Faction): List[Tile] = {
     unoccupiedNeighboursFor(faction).filter(t => hasCorrectTerrainFor(faction, t))
   }
 
-  def buildDwelling(tile: Tile, faction: Faction): Unit = {
-    placeDwelling(tile, faction)
-    tile.faction = faction.factionType
+  def buildDwelling(hex: Hex, faction: Faction): Unit = {
+    val t = findTileByHex(hex)
+    placeDwelling(t.hex, faction)
+    t.faction = faction.factionType
     faction.spend(faction.buildingCost(Dwelling))
   }
 

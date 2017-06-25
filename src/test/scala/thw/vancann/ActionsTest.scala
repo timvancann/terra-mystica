@@ -1,7 +1,7 @@
 package thw.vancann
 
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
-import thw.vancann
+import thw.vancann.TerrainType._
 
 class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
 
@@ -16,11 +16,35 @@ class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
 
 
   test("placing initial dwelling") {
+    //Arrange
     val faction = gameState.factions.head
     val tile = gameState.gameBoard.placableDwellings(faction).head
     val action = Actions.placeInitialDwelling(faction, tile)
+
+    //Act
     val newState = action(gameState)
 
-    tile should not be newState.gameBoard.placableDwellings(faction)
+    //Assert
+    tile should not be newState.gameBoard.placableDwellings(faction).head
+    tile.faction shouldBe null
+
+    val newTile = newState.gameBoard.upgradableBuildings(faction).head
+    newTile.faction shouldBe faction.factionType
+  }
+
+  test("terraforming a tile") {
+    //Arrange
+    val faction = gameState.factions.head
+    val tile = gameState.gameBoard.placableDwellings(faction).head
+    val action = Actions.terraform(tile, Wasteland)
+
+    //Act
+    val newState = action(gameState)
+
+    //Assert
+    tile.terrain shouldBe Plains
+    val newTile = newState.gameBoard.findTileByHex(tile.hex)
+    tile.terrain should not be newTile.terrain
+    newTile.terrain shouldBe Wasteland
   }
 }

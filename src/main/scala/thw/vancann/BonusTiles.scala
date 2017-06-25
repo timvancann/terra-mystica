@@ -20,7 +20,7 @@ object BonusTileActions {
     gameState => {
       val newState = gameState.clone
       gameState.gameBoard.terraform(
-        properties(PropertyType.Tile).asInstanceOf[Tile],
+        properties(PropertyType.Hex).asInstanceOf[Hex],
         properties(PropertyType.TerrainType).asInstanceOf[TerrainType])
       newState
     }

@@ -9,7 +9,7 @@ object Actions {
   def placeInitialDwelling(faction: Faction, where: Tile): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      newState.gameBoard.placeDwelling(where, faction)
+      newState.gameBoard.placeDwelling(where.hex, faction)
       newState
     }
   }
@@ -17,7 +17,7 @@ object Actions {
   def terraform(tile: Tile, to: TerrainType): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      newState.gameBoard.terraform(tile, to)
+      newState.gameBoard.terraform(tile.hex, to)
       newState
     }
   }
@@ -25,7 +25,7 @@ object Actions {
   def buildDwelling(tile: Tile, faction:Faction): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      newState.gameBoard.buildDwelling(tile, faction)
+      newState.gameBoard.buildDwelling(tile.hex, faction)
       newState
     }
   }
