@@ -2,6 +2,7 @@ package thw.vancann
 
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
 import thw.vancann.TerrainType._
+import thw.vancann.ResourceType._
 
 class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
 
@@ -61,5 +62,37 @@ class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
     tile.faction shouldBe null
     val newTile = newState.gameBoard.findTileByHex(tile.hex)
     newTile.faction shouldBe faction.factionType
+  }
+
+  test("advance ship track") {
+    //Arrange
+    val faction = gameState.factions.head
+    val action = Actions.shippingTrack(faction)
+
+    //Act
+    val newState = action(gameState)
+
+    //Assert
+    faction.resourcesToSpend(VictoryPoints) shouldBe 20
+    faction.resourcesToSpend(Ship) shouldBe 0
+    val newFaction = newState.factions.head
+    newFaction.resourcesToSpend(VictoryPoints) shouldBe 20 + faction.victoryPointsPerShipTrack(1)
+    newFaction.resourcesToSpend(Ship) shouldBe 1
+  }
+
+  test("advance spade track") {
+    //Arrange
+    val faction = gameState.factions.head
+    val action = Actions.spadeTrack(faction)
+
+    //Act
+    val newState = action(gameState)
+
+    //Assert
+    faction.resourcesToSpend(VictoryPoints) shouldBe 20
+    faction.resourcesToSpend(Spade) shouldBe 0
+    val newFaction = newState.factions.head
+    newFaction.resourcesToSpend(VictoryPoints) shouldBe 20 + faction.victoryPointsPerSpadeTrack(1)
+    newFaction.resourcesToSpend(Spade) shouldBe 1
   }
 }

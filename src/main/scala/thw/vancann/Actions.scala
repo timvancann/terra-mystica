@@ -33,7 +33,8 @@ object Actions {
   def shippingTrack(faction: Faction): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      faction.advanceShipTrack
+      val newFaction = newState.factions.find(_.factionType == faction.factionType).get
+      newFaction.advanceShipTrack
       newState
     }
   }
@@ -41,7 +42,8 @@ object Actions {
   def spadeTrack(faction: Faction): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      faction.advanceSpadeTrack
+      val newFaction = newState.factions.find(_.factionType == faction.factionType).get
+      newFaction.advanceSpadeTrack
       newState
     }
   }

@@ -15,11 +15,11 @@ case class Faction(factionType: FactionType,
                    buildingCost: Map[BuildingType, List[(ResourceType, Int)]] = Map.empty,
                    availableBuildings: mutable.Map[BuildingType, Int] = mutable.Map.empty,
                    incomePerBuilding: Map[BuildingType, List[List[(ResourceType, Int)]]] = Map.empty,
-                   private val victoryPointsPerShipTrack: List[Int] = List(0, 2, 3, 4),
-                   private val victoryPointsPerSpadeTrack: List[Int] = List(0, 6, 6),
+                   victoryPointsPerShipTrack: List[Int] = List(0, 2, 3, 4),
+                   victoryPointsPerSpadeTrack: List[Int] = List(0, 6, 6),
                    hasSpadeTrack: Boolean = true,
                    private val supply: Map[ResourceType, Resource] = Map.empty,
-                   private var bonusTile: BonusTile = BonusTile()
+                   var bonusTile: BonusTile = BonusTile()
                   ) {
 
 
