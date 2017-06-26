@@ -47,4 +47,19 @@ class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
     tile.terrain should not be newTile.terrain
     newTile.terrain shouldBe Wasteland
   }
+
+  test("building a dwelling") {
+    //Arrange
+    val faction = gameState.factions.head
+    val tile = gameState.gameBoard.placableDwellings(faction).head
+    val action = Actions.buildDwelling(tile, faction)
+
+    //Act
+    val newState = action(gameState)
+
+    //Assert
+    tile.faction shouldBe null
+    val newTile = newState.gameBoard.findTileByHex(tile.hex)
+    newTile.faction shouldBe faction.factionType
+  }
 }

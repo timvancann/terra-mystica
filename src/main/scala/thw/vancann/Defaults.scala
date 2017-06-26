@@ -128,7 +128,8 @@ object Defaults {
         Stronghold -> List((Worker, 4), (Gold, 8))
       ),
       availableBuildings = defaultBuildings,
-      incomePerBuilding = Map.empty
+      incomePerBuilding = Map.empty,
+      supply = supply
     )
   )
 
