@@ -3,6 +3,8 @@ package thw.vancann
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
 import thw.vancann.TerrainType._
 import thw.vancann.ResourceType._
+import thw.vancann.PriestSpaceType._
+import thw.vancann.CultType._
 
 class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
 
@@ -94,5 +96,18 @@ class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
     val newFaction = newState.factions.head
     newFaction.resourcesToSpend(VictoryPoints) shouldBe 20 + faction.victoryPointsPerSpadeTrack(1)
     newFaction.resourcesToSpend(Spade) shouldBe 1
+  }
+
+  test("place priest on cult") {
+    //Arrange
+    val faction = gameState.factions.head
+    val action = Actions.placePriestOnCult(faction, (Fire, Bonus2))
+
+    //Act
+    val newState = action(gameState)
+
+    //Assert
+    newState.cultBoard.cults(Fire).availablePriestSpaces.length shouldBe 4
+    newState.cultBoard.cults(Fire).availablePriestSpaces.filter(_.priestSpaceType == Bonus2).length shouldBe 2
   }
 }

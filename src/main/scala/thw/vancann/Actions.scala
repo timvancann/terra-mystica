@@ -2,6 +2,7 @@ package thw.vancann
 
 import thw.vancann.BuildingType.BuildingType
 import thw.vancann.CultType.CultType
+import thw.vancann.PriestSpaceType.PriestSpaceType
 import thw.vancann.TerrainType.TerrainType
 
 object Actions {
@@ -48,7 +49,7 @@ object Actions {
     }
   }
 
-  def placePriestOnCult(faction: Faction, where: (CultType, PriestSpace)): GameState => GameState = {
+  def placePriestOnCult(faction: Faction, where: (CultType, PriestSpaceType)): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
       newState.cultBoard.placePriest(faction, where)

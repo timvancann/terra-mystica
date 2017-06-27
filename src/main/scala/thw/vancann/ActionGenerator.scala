@@ -1,6 +1,7 @@
 package thw.vancann
 
 import thw.vancann.CultType.CultType
+import thw.vancann.PriestSpaceType.PriestSpaceType
 
 object ActionGenerator {
 
@@ -16,11 +17,11 @@ object ActionGenerator {
     val cost = faction.cultCost
     val n = faction.numberOfTimesResourcesToSpendFor(List(cost))
     if (n > 0) {
-      val spaces: Seq[(CultType, PriestSpace)] = (for {
+      val spaces: Seq[(CultType, PriestSpaceType)] = (for {
         cult <- gameState.cultBoard.cults
-        space <- cult._2.availableOrderSpaces
+        space <- cult._2.availablePriestSpaces
         if cult._2.currentProgress(faction) < 10
-      } yield (cult._1, space)) (collection.breakOut)
+      } yield (cult._1, space.priestSpaceType)) (collection.breakOut)
       spaces.map(s => Actions.placePriestOnCult(faction, s))
     } else {
       List.empty

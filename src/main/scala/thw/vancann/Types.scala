@@ -39,3 +39,8 @@ object PropertyType extends Enumeration {
   type PropertyType = Value
   val CultType, TerrainType, Hex, Faction = Value
 }
+
+object PriestSpaceType extends Enumeration {
+  type PriestSpaceType = Value
+  val Bonus3, Bonus2, Bonus1 = Value
+}

@@ -18,7 +18,7 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
   }
 
   test("Test default available order spaces") {
-    val spaces = cult.availableOrderSpaces
+    val spaces = cult.availablePriestSpaces
     spaces.length shouldBe 5
   }
 
@@ -43,22 +43,22 @@ class CultBoardTest extends FunSuite with MockFactory with Matchers with BeforeA
   }
 
   test("Test adding priest on non-1 bonus space") {
-    var spaces = cult.availableOrderSpaces
+    var spaces = cult.availablePriestSpaces
 
-    cult.placePriest(faction, spaces.head)
+    cult.placePriest(faction, spaces.head.priestSpaceType)
 
-    spaces = cult.availableOrderSpaces
+    spaces = cult.availablePriestSpaces
     spaces.length shouldBe 4
 
     cult.currentProgress(faction) shouldBe 3
   }
 
   test("Test adding priest on 1-bonus space") {
-    val space = cult.availableOrderSpaces.reverse.head
+    val space = cult.availablePriestSpaces.reverse.head
 
-    cult.placePriest(faction, space)
+    cult.placePriest(faction, space.priestSpaceType)
 
-    val spaces = cult.availableOrderSpaces
+    val spaces = cult.availablePriestSpaces
     spaces.length shouldBe 5
 
     cult.currentProgress(faction) shouldBe 1

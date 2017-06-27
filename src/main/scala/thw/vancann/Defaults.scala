@@ -6,8 +6,9 @@ import thw.vancann.CultType._
 import thw.vancann.FactionType._
 import thw.vancann.ResourceType._
 import thw.vancann.TerrainType._
+import thw.vancann.PriestSpaceType._
 
-import scala.collection.{immutable, mutable}
+import scala.collection.mutable
 
 object Defaults {
 
@@ -76,7 +77,7 @@ object Defaults {
     Tile(Hex(3, 11), Plains)
   )
 
-  def cultPriestSpaces = List(PriestSpace(3), PriestSpace(2), PriestSpace(2), PriestSpace(2), PriestSpace(1))
+  def cultPriestSpaces = List(PriestSpace(Bonus3, 3), PriestSpace(Bonus2, 2), PriestSpace(Bonus2, 2), PriestSpace(Bonus2, 2), PriestSpace(Bonus1, 1))
   def cultProgressSpaces: Seq[ProgressSpace] = (0 to 10)
     .map {
       case i@3 => ProgressSpace(i, 1)
