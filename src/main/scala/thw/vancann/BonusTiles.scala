@@ -2,6 +2,7 @@ package thw.vancann
 
 import thw.vancann.BuildingType.BuildingType
 import thw.vancann.CultType.CultType
+import thw.vancann.FactionType.FactionType
 import thw.vancann.PropertyType.PropertyType
 import thw.vancann.ResourceType.ResourceType
 import thw.vancann.TerrainType.TerrainType
@@ -10,7 +11,7 @@ case class BonusTile(action: Map[PropertyType, Any] => GameState => GameState = 
                      income: List[(ResourceType, Int)] = List.empty,
                      passiveBonus: List[(ResourceType, Int)] = List.empty,
                      passBonus: List[(BuildingType, Int)] = List.empty) {
-  var faction: Faction = _
+  var faction: FactionType = _
   var hasBeenUsed: Boolean = false
 }
 

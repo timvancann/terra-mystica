@@ -24,7 +24,7 @@ object Actions {
     }
   }
 
-  def buildDwelling(tile: Tile, faction:Faction): GameState => GameState = {
+  def buildDwelling(tile: Tile, faction: Faction): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
       newState.gameBoard.buildDwelling(tile.hex, faction)
@@ -35,7 +35,7 @@ object Actions {
   def shippingTrack(faction: Faction): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      val newFaction = newState.factions.find(_.factionType == faction.factionType).get
+      val newFaction = findFaction(newState, faction.factionType)
       newFaction.advanceShipTrack
       newState
     }
@@ -44,7 +44,7 @@ object Actions {
   def spadeTrack(faction: Faction): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      val newFaction = newState.factions.find(_.factionType == faction.factionType).get
+      val newFaction = findFaction(newState, faction.factionType)
       newFaction.advanceSpadeTrack
       newState
     }
@@ -64,10 +64,14 @@ object Actions {
       newState.gameBoard.upgradeBuilding(tile.hex, to)
       factionsToGainPower.foreach(f => {
         val power = newState.gameBoard.possiblePowerGainFor(f, tile.hex)
-        newState.factions.find(_.factionType == f).get.powerByStructure(power)
+        findFaction(newState, f).powerByStructure(power)
       })
       newState
     }
+  }
+
+  private def findFaction(newState: GameState, f: FactionType) = {
+    newState.factions.find(_.factionType == f).get
   }
 
   def powerAction(faction: Faction): GameState => GameState = {
@@ -86,11 +90,12 @@ object Actions {
     }
   }
 
-  def pass(faction: Faction, bonusTile: BonusTile): GameState => GameState = {
+  def pass(faction: Faction, newBonusTile: BonusTile): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      gameState.gameBoard.calculatePassBonusFor(faction: Faction, bonusTile.passBonus)
-      faction.changeBonusTile(bonusTile)
+      val oldBonusTile = faction.bonusTile
+      newState.gameBoard.calculatePassBonusFor(faction: Faction, oldBonusTile.passBonus)
+      findFaction(newState, faction.factionType).changeBonusTile(newBonusTile)
       newState
     }
   }

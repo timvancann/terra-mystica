@@ -6,6 +6,7 @@ import thw.vancann.ResourceType._
 import thw.vancann.PriestSpaceType._
 import thw.vancann.CultType._
 import thw.vancann.BuildingType._
+import thw.vancann.BonusTileType._
 
 class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
 
@@ -145,5 +146,21 @@ class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
     //Assert
     gameState.gameBoard.findTileByHex(tile.hex).building shouldBe Dwelling
     newState.gameBoard.findTileByHex(tile.hex).building shouldBe TradingHouse
+  }
+
+  test("passing the turn") {
+    //Arrange
+    val faction = gameState.factions.head
+    val oldTile = Defaults.bonusTiles(Bon1)
+    val newTile = Defaults.bonusTiles(Bon2)
+    faction.changeBonusTile(oldTile)
+    val action = Actions.pass(faction, newTile)
+
+    //Act
+    val newState = action(gameState)
+
+    //Assert
+    faction.bonusTile shouldBe oldTile
+    newState.factions.head.bonusTile shouldBe newTile
   }
 }

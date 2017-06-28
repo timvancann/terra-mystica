@@ -116,8 +116,11 @@ case class Faction(factionType: FactionType,
 
   def changeBonusTile(newBonusTile: BonusTile): Unit = {
     bonusTile.passiveBonus.foreach(b => supply(b._1).spend(b._2))
+    bonusTile.hasBeenUsed = false
+    bonusTile.faction = null
 
     bonusTile = newBonusTile
+    newBonusTile.faction = this.factionType
 
     bonusTile.passiveBonus.foreach(b => supply(b._1).gain(b._2))
   }
