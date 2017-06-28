@@ -22,7 +22,7 @@ object TerrainType extends Enumeration {
 
 object FactionType extends Enumeration {
   type FactionType = Value
-  val Halflings = Value
+  val Halflings, ChaosWizards = Value
 }
 
 object BonusTileType extends Enumeration {

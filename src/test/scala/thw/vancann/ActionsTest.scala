@@ -5,6 +5,7 @@ import thw.vancann.TerrainType._
 import thw.vancann.ResourceType._
 import thw.vancann.PriestSpaceType._
 import thw.vancann.CultType._
+import thw.vancann.BuildingType._
 
 class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
 
@@ -13,7 +14,7 @@ class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
   before {
     val gameBoard = GameBoard(Defaults.tiles, Defaults.bridges)
     val cultBoard = CultBoard(Defaults.cults)
-    val factions = List(Defaults.factions.head._2)
+    val factions = Defaults.factions.values.toList
     gameState = GameState(gameBoard, cultBoard, factions)
   }
 
@@ -108,6 +109,41 @@ class ActionsTest extends FunSuite with Matchers with BeforeAndAfter {
 
     //Assert
     newState.cultBoard.cults(Fire).availablePriestSpaces.length shouldBe 4
-    newState.cultBoard.cults(Fire).availablePriestSpaces.filter(_.priestSpaceType == Bonus2).length shouldBe 2
+    newState.cultBoard.cults(Fire).availablePriestSpaces.count(_.priestSpaceType == Bonus2) shouldBe 2
+  }
+
+  test("upgrading building no power gain for any faction") {
+    //Arrange
+    val faction = gameState.factions.head
+    val tile = gameState.gameBoard.placableDwellings(faction).head
+    gameState.gameBoard.placeDwelling(tile.hex, faction)
+    val action = Actions.upgradeBuilding(faction, tile, TradingHouse, List.empty)
+
+    //Act
+    val newState = action(gameState)
+
+    //Assert
+    gameState.gameBoard.findTileByHex(tile.hex).building shouldBe Dwelling
+    newState.gameBoard.findTileByHex(tile.hex).building shouldBe TradingHouse
+  }
+
+  test("upgrading building with power gain for a faction") {
+    //Arrange
+    val faction = gameState.factions.head
+    val board = gameState.gameBoard
+    val tile = board.placableDwellings(faction).head
+    board.placeDwelling(tile.hex, faction)
+
+    val otherFaction = gameState.factions.tail.head
+    board.placeDwelling(board.placableDwellings(otherFaction).head.hex, otherFaction)
+
+    val action = Actions.upgradeBuilding(faction, tile, TradingHouse, List(otherFaction.factionType))
+
+    //Act
+    val newState = action(gameState)
+
+    //Assert
+    gameState.gameBoard.findTileByHex(tile.hex).building shouldBe Dwelling
+    newState.gameBoard.findTileByHex(tile.hex).building shouldBe TradingHouse
   }
 }

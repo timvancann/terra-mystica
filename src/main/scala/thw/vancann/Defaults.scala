@@ -131,6 +131,24 @@ object Defaults {
       availableBuildings = defaultBuildings,
       incomePerBuilding = Map.empty,
       supply = supply
+    ),
+    ChaosWizards -> Faction(
+      factionType = ChaosWizards,
+      // TODO: change this to wasteland
+      terrain = Mountains,
+      cultCost = (Priest, 1),
+      terraformCost = List((Worker, 3), (Worker, 2), (Worker, 1)),
+      shipCost = List((Priest, 1), (Gold, 4)),
+      buildingCost = Map(
+        Dwelling -> List((Worker, 1), (Gold, 2)),
+        TradingHouse -> List((Worker, 2), (Gold, 6)),
+        Temple -> List((Worker, 2), (Gold, 5)),
+        Sanctuary -> List((Worker, 4), (Gold, 8)),
+        Stronghold -> List((Worker, 4), (Gold, 6))
+      ),
+      availableBuildings = defaultBuildings,
+      incomePerBuilding = Map.empty,
+      supply = supply
     )
   )
 

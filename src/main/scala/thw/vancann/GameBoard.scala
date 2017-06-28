@@ -80,13 +80,13 @@ case class GameBoard(private val tiles: List[Tile], private val bridges: List[Ti
       .filter(t => t.building == Dwelling | t.building == TradingHouse | t.building == Temple)
   }
 
-  def upgradeBuilding(tile: Tile, to: BuildingType): Unit = {
-    tile.building = to
+  def upgradeBuilding(hex: Hex, to: BuildingType): Unit = {
+    findTileByHex(hex).building = to
   }
 
-  def possiblePowerGainFor(faction: Faction, tile: Tile): Int = {
-    neighbours(tile.hex)
-      .filter(_.faction == faction.factionType)
+  def possiblePowerGainFor(factionType: FactionType, hex: Hex): Int = {
+    neighbours(hex)
+      .filter(_.faction == factionType)
       .map(t => {
         t.building match {
           case BuildingType.Stronghold | BuildingType.Sanctuary => 3

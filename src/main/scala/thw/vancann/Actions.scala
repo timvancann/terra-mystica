@@ -2,6 +2,7 @@ package thw.vancann
 
 import thw.vancann.BuildingType.BuildingType
 import thw.vancann.CultType.CultType
+import thw.vancann.FactionType.FactionType
 import thw.vancann.PriestSpaceType.PriestSpaceType
 import thw.vancann.TerrainType.TerrainType
 
@@ -57,21 +58,13 @@ object Actions {
     }
   }
 
-  def upgradeBuilding(to: BuildingType, tile: Tile): GameState => GameState = {
+  def upgradeBuilding(faction: Faction, tile: Tile, to: BuildingType, factionsToGainPower: List[FactionType]): GameState => GameState = {
     gameState => {
       val newState = gameState.clone
-      newState.gameBoard.upgradeBuilding(tile, to)
-      newState
-    }
-  }
-
-  def upgradeBuilding(faction: Faction, tile: Tile, to: BuildingType, factionsToGainPower: List[Faction]): GameState => GameState = {
-    gameState => {
-      val newState = gameState.clone
-      gameState.gameBoard.upgradeBuilding(tile, to)
+      newState.gameBoard.upgradeBuilding(tile.hex, to)
       factionsToGainPower.foreach(f => {
-        val power = gameState.gameBoard.possiblePowerGainFor(f, tile)
-        f.powerByStructure(power)
+        val power = newState.gameBoard.possiblePowerGainFor(f, tile.hex)
+        newState.factions.find(_.factionType == f).get.powerByStructure(power)
       })
       newState
     }

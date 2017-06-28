@@ -180,7 +180,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
       buildingCost = Map(Dwelling -> List((ResourceType.Worker, 1))), supply = Defaults.supply)
     val tiles = gameBoard.placableDwellings(faction)
     gameBoard.buildDwelling(tiles.head.hex, faction)
-    gameBoard.upgradeBuilding(tiles.head, BuildingType.TradingHouse)
+    gameBoard.upgradeBuilding(tiles.head.hex, BuildingType.TradingHouse)
     tiles.head.building shouldBe BuildingType.TradingHouse
   }
 
@@ -206,7 +206,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
     gameBoard.placeDwelling(tile.hex, faction)
 
     val faction2 = Faction(FactionType.Halflings, TerrainType.Forest, availableBuildings = mutable.Map(Dwelling -> 10))
-    gameBoard.possiblePowerGainFor(faction2, tile) shouldBe 0
+    gameBoard.possiblePowerGainFor(faction2.factionType, tile.hex) shouldBe 0
   }
 
   test("possible power gain for adjacent faction") {
@@ -216,7 +216,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
 
     val faction2 = Faction(FactionType.Halflings, TerrainType.Forest, availableBuildings = mutable.Map(Dwelling -> 10))
     gameBoard.placeDwelling(gameBoard.placableDwellings(faction2).head.hex, faction2)
-    gameBoard.possiblePowerGainFor(faction2, tile) shouldBe 1
+    gameBoard.possiblePowerGainFor(faction2.factionType, tile.hex) shouldBe 1
   }
 
   test("calculate pass bonus for no bonus") {
@@ -259,7 +259,7 @@ class GameBoardTest extends FunSuite with Matchers with MockFactory with BeforeA
     gameBoard.placeDwelling(tiles.head.hex, faction)
     gameBoard.placeDwelling(tiles(1).hex, faction)
     gameBoard.placeDwelling(tiles(2).hex, faction)
-    gameBoard.upgradeBuilding(tiles.head, TradingHouse)
+    gameBoard.upgradeBuilding(tiles.head.hex, TradingHouse)
 
     gameBoard.calculatePassBonusFor(faction, List((Dwelling, 3), (TradingHouse, 2))) shouldBe 8
   }
